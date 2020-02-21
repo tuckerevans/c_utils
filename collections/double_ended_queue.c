@@ -1,5 +1,4 @@
-#include "vector.h"
-
+#include "double_ended_queue.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -8,16 +7,16 @@
 
 #define START_SIZE 64;
 
-struct vector {
+struct double_ended_queeu {
 	void **base, **new, **ptr;
 	int i, limit;
 };
 
-vec* vec_new()
+deq* deq_new()
 {
-	vec *root;
+	deq *root;
 
-	root = malloc(sizeof(vec));
+	root = malloc(sizeof(deq));
 	assert(root);
 
 	root->limit = START_SIZE;
@@ -27,12 +26,12 @@ vec* vec_new()
 	return root;
 }
 
-vec* vec_with_capacity(n)
+deq* deq_with_capacity(n)
 int n;
 {
-	vec *root;
+	deq *root;
 
-	root = malloc(sizeof(vec));
+	root = malloc(sizeof(deq));
 	assert(root);
 
 	root->limit = n;
@@ -42,8 +41,8 @@ int n;
 	return root;
 }
 
-int vec_size(root)
-vec *root;
+int deq_size(root)
+deq *root;
 {
 	if (!root) {
 		return -1;
@@ -51,12 +50,12 @@ vec *root;
 	return (root->new - root->ptr);
 }
 
-void vec_resize(root)
-vec *root;
+void deq_resize(root)
+deq *root;
 {
 	if (root->ptr != root->base) {
 		memmove(root->base, root->ptr, root->new - root->ptr);
-		root->new = root->base + vec_size(root);
+		root->new = root->base + deq_size(root);
 		root->ptr = root->base;
 	} else {
 		root->base = malloc(root->limit * 2 * sizeof(void*));
@@ -67,7 +66,7 @@ vec *root;
 		assert(root->base);
 
 
-		root->new = root->base + vec_size(root);
+		root->new = root->base + deq_size(root);
 		root->limit = root->limit * 2;
 
 		free(root->ptr);
@@ -75,22 +74,22 @@ vec *root;
 	}
 }
 
-void vec_push(root, item)
-vec *root;
+void deq_push(root, item)
+deq *root;
 void *item;
 {
 	if (!root) {
 		return;
 	}
 	if (root->new == root->base + root->limit) {
-		vec_resize(root);
+		deq_resize(root);
 	}
 
 	*(root->new++) = item;
 }
 
-void* vec_rmfirst(root)
-vec *root;
+void* deq_rmfirst(root)
+deq *root;
 {
 	void* tmp;
 	if (!root || root->ptr == root->new) {
@@ -100,8 +99,8 @@ vec *root;
 	return tmp = *(root->ptr++);
 }
 
-void* vec_index(root, index)
-vec *root;
+void* deq_index(root, index)
+deq *root;
 int index;
 {
 	if (!root || root->ptr + index >= root->new) {
@@ -111,8 +110,8 @@ int index;
 	return root->ptr[index];
 }
 
-void* vec_pop(root)
-vec *root;
+void* deq_pop(root)
+deq *root;
 {
 	void* tmp;
 	if (!root || root->new == root->ptr) {
@@ -122,8 +121,8 @@ vec *root;
 	return tmp = *(--root->new);
 }
 
-void vec_free(root)
-vec *root;
+void deq_free(root)
+deq *root;
 {
 	free(root->base);
 	root->base = NULL;
@@ -133,8 +132,8 @@ vec *root;
 	free(root);
 }
 
-void vec_print(root)
-vec *root;
+void deq_print(root)
+deq *root;
 {
 	void **tmp;
 
@@ -146,17 +145,17 @@ vec *root;
 	fprintf(stderr, "\n");
 }
 
-vec* vec_cp(root)
-vec *root;
+deq* deq_cp(root)
+deq *root;
 {
-	vec *copy;
+	deq *copy;
 
-	copy = vec_with_capacity(root->limit);
+	copy = deq_with_capacity(root->limit);
 
 	copy->base = memcpy(copy->base, root->ptr,
-			vec_size(root) * sizeof(void*));
+			deq_size(root) * sizeof(void*));
 	assert(copy->base);
 
 	copy->ptr = copy->base;
-	copy->new = copy->base + vec_size(root);
+	copy->new = copy->base + deq_size(root);
 }
