@@ -8,7 +8,7 @@
 #define START_SIZE 64;
 
 struct double_ended_queeu {
-	void **base, **new, **ptr;
+	void **base, **end, **beg;
 	int i, limit;
 };
 
@@ -20,7 +20,7 @@ deq* deq_new()
 	assert(root);
 
 	root->limit = START_SIZE;
-	root->base = root->new = root->ptr = malloc(root->limit * sizeof(void*));
+	root->base = root->end = root->beg = malloc(root->limit * sizeof(void*));
 	assert(root->base);
 
 	return root;
@@ -35,7 +35,7 @@ int n;
 	assert(root);
 
 	root->limit = n;
-	root->base = root->new = root->ptr = malloc(root->limit * sizeof(void*));
+	root->base = root->end = root->beg = malloc(root->limit * sizeof(void*));
 	assert(root->base);
 
 	return root;
@@ -47,78 +47,78 @@ deq *root;
 	if (!root) {
 		return -1;
 	}
-	return (root->new - root->ptr);
+	return (root->end - root->beg);
 }
 
 void deq_resize(root)
 deq *root;
 {
-	if (root->ptr != root->base) {
-		memmove(root->base, root->ptr, root->new - root->ptr);
-		root->new = root->base + deq_size(root);
-		root->ptr = root->base;
+	if (root->beg != root->base) {
+		memmove(root->base, root->beg, root->end - root->beg);
+		root->end = root->base + deq_size(root);
+		root->beg = root->base;
 	} else {
 		root->base = malloc(root->limit * 2 * sizeof(void*));
 		assert(root->base);
 
 
-		root->base = memcpy(root->base, root->ptr, root->limit * sizeof(void*));
+		root->base = memcpy(root->base, root->beg, root->limit * sizeof(void*));
 		assert(root->base);
 
 
-		root->new = root->base + deq_size(root);
+		root->end = root->base + deq_size(root);
 		root->limit = root->limit * 2;
 
-		free(root->ptr);
-		root->ptr = root->base;
+		free(root->beg);
+		root->beg = root->base;
 	}
 }
 
-void deq_push(root, item)
+void deq_push_back(root, item)
 deq *root;
 void *item;
 {
 	if (!root) {
 		return;
 	}
-	if (root->new == root->base + root->limit) {
+	if (root->end == root->base + root->limit) {
 		deq_resize(root);
 	}
 
-	*(root->new++) = item;
+	*(root->end++) = item;
 }
 
-void* deq_rmfirst(root)
+void* deq_pop_front(root)
 deq *root;
 {
 	void* tmp;
-	if (!root || root->ptr == root->new) {
+	if (!root || root->beg == root->end) {
 		return NULL;
 	}
 
-	return tmp = *(root->ptr++);
+	return tmp = *(root->beg++);
 }
 
 void* deq_index(root, index)
 deq *root;
 int index;
 {
-	if (!root || root->ptr + index >= root->new) {
+	if (!root || root->beg + index >= root->end) {
 		return NULL;
 	}
 
-	return root->ptr[index];
+	return root->beg[index];
 }
 
-void* deq_pop(root)
+void* deq_pop_back(root)
 deq *root;
 {
 	void* tmp;
-	if (!root || root->new == root->ptr) {
+	if (!root || root->end == root->beg) {
 		return NULL;
 	}
 
-	return tmp = *(--root->new);
+	return tmp = *(--root->end);
 }
 
 void deq_free(root)
@@ -126,8 +126,8 @@ deq *root;
 {
 	free(root->base);
 	root->base = NULL;
-	root->new = NULL;
-	root->ptr = NULL;
+	root->end = NULL;
+	root->beg = NULL;
 
 	free(root);
 }
@@ -138,8 +138,8 @@ deq *root;
 	void **tmp;
 
 	fprintf(stderr, "VEC[b: %p, p: %p, n:%p]:\n\t ",
-			root->base, root->ptr, root->new);
-	for (tmp = root->ptr; tmp < root->new; tmp++){
+			root->base, root->beg, root->end);
+	for (tmp = root->beg; tmp < root->end; tmp++){
 		fprintf(stderr, "[%p]", *tmp);
 	}
 	fprintf(stderr, "\n");
@@ -152,10 +152,10 @@ deq *root;
 
 	copy = deq_with_capacity(root->limit);
 
-	copy->base = memcpy(copy->base, root->ptr,
+	copy->base = memcpy(copy->base, root->beg,
 			deq_size(root) * sizeof(void*));
 	assert(copy->base);
 
-	copy->ptr = copy->base;
-	copy->new = copy->base + deq_size(root);
+	copy->beg = copy->base;
+	copy->end = copy->base + deq_size(root);
 }

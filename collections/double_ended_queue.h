@@ -12,12 +12,12 @@ int deq_size(deq*);
 int deq_capacity(deq*);
 deq* deq_cp(deq*);
 void deq_free(deq*);
-void deq_print(vec*);
 
 /*data*/
-void deq_push(deq*, void*);
-void* deq_rmfirst(deq*);
+void deq_push_back(deq*, void*);
+void* deq_pop_front(deq*);
 void* deq_index(deq*, int);
+void* deq_pop_back(deq*);
 
 
 
