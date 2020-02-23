@@ -20,11 +20,11 @@ void* deq_index(deq*, int);
 void* deq_pop_back(deq*);
 
 void deq_swap(deq*, int, int);
+void deq_truncate(deq*, int);
 
 
 /*
  * resevee
- * truncate
  * front
  * back
  * push/pop front

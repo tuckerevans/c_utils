@@ -181,3 +181,14 @@ int i, j;
 	root->end[j] = root->end[i];
 	root->end[i] = tmp;
 }
+
+void deq_truncate(root, size)
+deq *root;
+int size;
+{
+	if ((!root) || size > deq_size(root)) {
+		return;
+	}
+
+	root->end = root->beg + size;
+}
