@@ -192,3 +192,23 @@ int size;
 
 	root->end = root->beg + size;
 }
+
+void* deq_front(root)
+deq *root;
+{
+	if (!root) {
+		return;
+	}
+
+	return *root->beg;
+}
+
+void* deq_back(root)
+deq *root;
+{
+	if (!root) {
+		return;
+	}
+
+	return *root->end;
+}

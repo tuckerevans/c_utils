@@ -22,13 +22,13 @@ void* deq_pop_back(deq*);
 void deq_swap(deq*, int, int);
 void deq_truncate(deq*, int);
 
+void* deq_front(deq*);
+void* deq_back(deq*);
+
 
 /*
  * resevee
- * front
- * back
- * push/pop front
- * push/pop back
+ * push back
  * swap_rm_front/back
  * insert
  * remove
