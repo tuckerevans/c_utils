@@ -159,3 +159,25 @@ deq *root;
 	copy->beg = copy->base;
 	copy->end = copy->base + deq_size(root);
 }
+
+void deq_swap(root, i, j)
+deq *root;
+int i, j;
+{
+	int len;
+	void *tmp;
+
+	if (!root) {
+		return;
+	}
+
+	len = deq_size(root);
+
+	if (i >= len || j >= len) {
+		return;
+	}
+
+	tmp = root->end[i];
+	root->end[j] = root->end[i];
+	root->end[i] = tmp;
+}
