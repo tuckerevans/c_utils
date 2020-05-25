@@ -117,11 +117,18 @@ void* deq_index(root, index)
 deq *root;
 int index;
 {
-	if (!root || root->beg + index >= root->end) {
+	void *tmp;
+
+	if (!root) {
 		return NULL;
 	}
 
-	return root->beg[index];
+	tmp = root->base + (root->beg + index - root->base) % root->limit);
+	if (tmp > root->end) {
+		return NULL;
+	}
+
+	return *tmp;
 }
 
 void* deq_pop_back(root)
