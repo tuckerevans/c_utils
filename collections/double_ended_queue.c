@@ -7,7 +7,7 @@
 
 #define START_SIZE 64;
 
-struct double_ended_queeu {
+struct double_ended_queue {
 	void **base, **end, **beg;
 	int i, limit;
 };
