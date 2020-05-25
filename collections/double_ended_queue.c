@@ -7,6 +7,10 @@
 
 #define START_SIZE 64;
 
+/*TODO add returned error codes for current void functions
+ * (resize, push, etc.)
+ */
+
 struct double_ended_queue {
 	void **base, **end, **beg;
 	int limit;
@@ -86,11 +90,14 @@ void *item;
 	if (!root) {
 		return;
 	}
-	if (root->end == root->base + root->limit) {
+
+	tmp = (root->base + (root->end - root->base) % root->limit);
+	if (tmp == root->beg) {
 		deq_resize(root);
+		tmp = (root->base + (root->end - root->base) % root->limit);
 	}
 
-	*(root->end++) = item;
+	*(root->end = tmp) = item;
 }
 
 void deq_push_front(root, item)
