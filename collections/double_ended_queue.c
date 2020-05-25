@@ -88,6 +88,20 @@ void *item;
 	*(root->end++) = item;
 }
 
+void deq_push_front(root, item)
+deq *root;
+void *item;
+{
+	if (!root) {
+		return;
+	}
+	if (root->end == root->base + root->limit) {
+		deq_resize(root);
+	}
+
+	*(root->end++) = item;
+}
+
 void* deq_pop_front(root)
 deq *root;
 {
