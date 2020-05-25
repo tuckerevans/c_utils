@@ -9,7 +9,7 @@
 
 struct double_ended_queue {
 	void **base, **end, **beg;
-	int i, limit;
+	int limit;
 };
 
 deq* deq_new()
@@ -47,7 +47,12 @@ deq *root;
 	if (!root) {
 		return -1;
 	}
-	return (root->end - root->beg);
+
+	if (root->beg <= root->end) {
+		return (root->end - root->beg);
+	}
+
+	return (root->base + root->limit - root->beg) + (root->end - root->base);
 }
 
 void deq_resize(root)
