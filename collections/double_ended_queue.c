@@ -104,14 +104,19 @@ void deq_push_front(root, item)
 deq *root;
 void *item;
 {
+	void *tmp;
+
 	if (!root) {
 		return;
 	}
-	if (root->end == root->base + root->limit) {
+
+	tmp = (root->base + ((root->beg - 1) - root->base) % root->limit);
+	if (tmp == root->beg) {
 		deq_resize(root);
+		tmp = (root->base + ((root->beg - 1) - root->base) % root->limit);
 	}
 
-	*(root->end++) = item;
+	*(root->beg = tmp) = item;
 }
 
 void* deq_pop_front(root)
