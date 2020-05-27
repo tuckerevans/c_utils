@@ -87,13 +87,13 @@ void* deq_index(root, index)
 deq *root;
 int index;
 {
-	void *tmp;
+	void **tmp;
 
 	if (!root) {
 		return NULL;
 	}
 
-	tmp = root->base + (root->beg + index - root->base) % root->limit);
+	tmp = root->base + ((root->beg + index - root->base) % root->limit);
 	if (tmp > root->end) {
 		return NULL;
 	}
@@ -105,6 +105,8 @@ void deq_push_back(root, item)
 deq *root;
 void *item;
 {
+	void **tmp;
+
 	if (!root) {
 		return;
 	}
@@ -122,7 +124,7 @@ void deq_push_front(root, item)
 deq *root;
 void *item;
 {
-	void *tmp;
+	void **tmp;
 
 	if (!root) {
 		return;
@@ -241,7 +243,7 @@ void* deq_front(root)
 deq *root;
 {
 	if (!root) {
-		return;
+		return NULL;
 	}
 
 	return *root->beg;
@@ -251,7 +253,7 @@ void* deq_back(root)
 deq *root;
 {
 	if (!root) {
-		return;
+		return NULL;
 	}
 
 	return *root->end;
