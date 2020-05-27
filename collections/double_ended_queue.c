@@ -83,6 +83,24 @@ deq *root;
 	}
 }
 
+void* deq_index(root, index)
+deq *root;
+int index;
+{
+	void *tmp;
+
+	if (!root) {
+		return NULL;
+	}
+
+	tmp = root->base + (root->beg + index - root->base) % root->limit);
+	if (tmp > root->end) {
+		return NULL;
+	}
+
+	return *tmp;
+}
+
 void deq_push_back(root, item)
 deq *root;
 void *item;
@@ -131,24 +149,6 @@ deq *root;
 	root->beg = (root->base + (root->beg - root->base) % root->limit);
 
 	return tmp;
-}
-
-void* deq_index(root, index)
-deq *root;
-int index;
-{
-	void *tmp;
-
-	if (!root) {
-		return NULL;
-	}
-
-	tmp = root->base + (root->beg + index - root->base) % root->limit);
-	if (tmp > root->end) {
-		return NULL;
-	}
-
-	return *tmp;
 }
 
 void* deq_pop_back(root)
