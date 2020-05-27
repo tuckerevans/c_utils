@@ -11,6 +11,17 @@
  * (resize, push, etc.)
  */
 
+/*TODO
+ * Fix empty vs totally full ambiquity
+ */
+
+/* Double ended queue as a circular buffer
+ * base is pointer to buffer.
+ * beg is where the first element is stored.
+ * end is where the last element is stored.
+ * limit is the maximum number of elements.
+ */
+
 struct double_ended_queue {
 	void **base, **end, **beg;
 	int limit;
