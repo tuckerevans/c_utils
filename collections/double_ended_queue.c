@@ -73,25 +73,32 @@ deq *root;
 void deq_resize(root)
 deq *root;
 {
-	if (root->beg != root->base) {
-		memmove(root->base, root->beg, root->end - root->beg);
-		root->end = root->base + deq_size(root);
-		root->beg = root->base;
+	void **tmp;
+	int size;
+
+	tmp = malloc(root->limit * 2 * sizeof(void*));
+	assert(root->base);
+
+	if (root->beg > root->end) {
+		/*copy beg<->limit*/
+		size = (root->base + (root->limit*sizeof(void*)) - root->beg);
+		tmp = memcpy(tmp, root->beg, size * sizeof(void*);
+		assert(tmp);
+
+		/*copy base<->end*/
+		tmp = memcpy(tmp + size, root->beg,
+			(root->end - root->base)* sizeof(void*));
+		assert(tmp);
 	} else {
-		root->base = malloc(root->limit * 2 * sizeof(void*));
-		assert(root->base);
-
-
-		root->base = memcpy(root->base, root->beg, root->limit * sizeof(void*));
-		assert(root->base);
-
-
-		root->end = root->base + deq_size(root);
-		root->limit = root->limit * 2;
-
-		free(root->beg);
-		root->beg = root->base;
+		size = deq_size(root);
+		tmp = memcpy(tmp, root->beg, size*sizeof(void*));
 	}
+
+	root->limit *= 2;
+
+	free(root->base);
+	root->base = root->beg = tmp;
+	root->end = root->base + size;
 }
 
 void* deq_index(root, index)
