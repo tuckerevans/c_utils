@@ -127,7 +127,10 @@ deq *root;
 		return NULL;
 	}
 
-	return tmp = *(root->beg++);
+	tmp = *(root->beg++);
+	root->beg = (root->base + (root->beg - root->base) % root->limit);
+
+	return tmp;
 }
 
 void* deq_index(root, index)
