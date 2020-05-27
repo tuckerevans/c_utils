@@ -159,7 +159,10 @@ deq *root;
 		return NULL;
 	}
 
-	return tmp = *(--root->end);
+	tmp = *(root->end--);
+	root->end = (root->base + (root->end - root->base) % root->limit);
+
+	return tmp;
 }
 
 void deq_free(root)
