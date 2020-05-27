@@ -178,7 +178,22 @@ deq *root;
 	free(root);
 }
 
-void deq_print(root)
+void deq_print(root, to_string)
+deq *root;
+char* to_string(void*);
+{
+	int i, size;;
+
+	size = deq_size(root);
+
+	printf("[");
+	for (i = 0; i < size; i++) {
+		printf("%s,", to_string(deq_index(root, i)));
+	}
+	printf("\b]\n");
+}
+
+void deq_debug_print(root)
 deq *root;
 {
 	void **tmp;
