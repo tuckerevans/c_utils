@@ -184,6 +184,9 @@ deq *root;
 	return root->base[root->end];
 }
 
+/* Note: Elements are not freed
+ * deq_clear should be called before if they are no longer needed.
+ */
 void deq_free(root)
 deq *root;
 {
@@ -191,6 +194,17 @@ deq *root;
 	root->base = NULL;
 
 	free(root);
+}
+
+void deq_clear(root)
+deq *root;
+{
+	int i, size;
+
+	size = deq_size(root);
+	for (i = 0; i < size; i++) {
+		free(deq_index(root, i));
+	}
 }
 
 void deq_print(root, to_string)
