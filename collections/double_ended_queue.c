@@ -184,6 +184,32 @@ deq *root;
 	return root->base[root->end];
 }
 
+void deq_remove(root, index)
+deq *root;
+int index;
+{
+	if (!root || index > root->limit
+			|| (index >= root->end && index < root->beg))
+		return;
+
+	index = (root->beg + index) % root->limit;
+	if (index >= root->end)
+		return NULL;
+
+	root->base[index] = NULL;
+
+	if (root->beg < root->end || index >= root->beg) {
+		root->beg = memmove(root->base + root->beg + 1,
+				root->base + root->beg,
+				(index - root->beg) * sizeof(void*));
+		++root->beg;
+	} else {
+		memmove(root->base + index, root->base + index + 1,
+				(--root->end - index) * sizeof(void*));
+	}
+
+}
+
 /* Note: Elements are not freed
  * deq_clear should be called before if they are no longer needed.
  */

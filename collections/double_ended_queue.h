@@ -33,12 +33,13 @@ void deq_truncate(deq*, int);
 void* deq_front(deq*);
 void* deq_back(deq*);
 
+void remove(deq*, int);
+
 
 /*
  * resevee
  * push back
  * swap_rm_front/back
  * insert
- * remove
  */
 #endif
