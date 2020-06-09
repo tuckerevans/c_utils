@@ -17,7 +17,7 @@ deq* deq_cp(deq*);
 void deq_free(deq*);
 
 /*Free all elements within queue*/
-void deq_clear()
+void deq_clear();
 
 /*data*/
 void deq_push_back(deq*, void*);
@@ -33,7 +33,7 @@ void deq_truncate(deq*, int);
 void* deq_front(deq*);
 void* deq_back(deq*);
 
-void remove(deq*, int);
+void deq_remove(deq*, int);
 
 
 /*

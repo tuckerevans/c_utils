@@ -194,12 +194,12 @@ int index;
 
 	index = (root->beg + index) % root->limit;
 	if (index >= root->end)
-		return NULL;
+		return;
 
 	root->base[index] = NULL;
 
 	if (root->beg < root->end || index >= root->beg) {
-		root->beg = memmove(root->base + root->beg + 1,
+		memmove(root->base + root->beg + 1,
 				root->base + root->beg,
 				(index - root->beg) * sizeof(void*));
 		++root->beg;
