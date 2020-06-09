@@ -27,6 +27,9 @@ void* deq_pop_back(deq*);
 
 void deq_swap(deq*, int, int);
 
+void* deq_swap_rm_front(deq*, int);
+void* deq_swap_rm_back(deq*, int);
+
 /*Note: Does not currently reduce memory footprint*/
 void deq_truncate(deq*, int);
 
@@ -38,8 +41,6 @@ void deq_remove(deq*, int);
 
 /*
  * resevee
- * push back
- * swap_rm_front/back
  * insert
  */
 #endif

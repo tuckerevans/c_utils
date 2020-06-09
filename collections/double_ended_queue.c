@@ -184,6 +184,22 @@ deq *root;
 	return root->base[root->end];
 }
 
+void* deq_swap_rm_front(root, index)
+deq *root;
+int index;
+{
+	deq_swap(root, 0, index);
+	return deq_pop_front(root);
+}
+
+void* deq_swap_rm_back(root, index)
+deq *root;
+int index;
+{
+	deq_swap(root,deq_size(root) - 1,index);
+	return deq_pop_back(root);
+}
+
 void deq_remove(root, index)
 deq *root;
 int index;
