@@ -11,10 +11,6 @@
  * (resize, push, etc.)
  */
 
-/*TODO
- * Fix empty vs totally full ambiquity
- */
-
 /* Double ended queue as a circular buffer
  * base is pointer to buffer.
  * beg: postiton of the first element is stored.
@@ -204,12 +200,14 @@ void deq_remove(root, index)
 deq *root;
 int index;
 {
-	if (!root || index > root->limit
-			|| (index >= root->end && index < root->beg))
+	if (!root || index > root->limit)
 		return;
 
 	index = (root->beg + index) % root->limit;
-	if (index >= root->end)
+
+	/*Bounds check*/
+	if ((root->beg <= root->end && index < root->beg || index >= root->end)
+			|| (index >= root->end && index < root->beg))
 		return;
 
 	root->base[index] = NULL;
@@ -223,7 +221,6 @@ int index;
 		memmove(root->base + index, root->base + index + 1,
 				(--root->end - index) * sizeof(void*));
 	}
-
 }
 
 /* Note: Elements are not freed
