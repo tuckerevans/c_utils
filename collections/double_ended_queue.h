@@ -22,8 +22,9 @@ void deq_clear();
 /*data*/
 void deq_push_back(deq*, void*);
 void* deq_pop_front(deq*);
-void* deq_index(deq*, int);
 void* deq_pop_back(deq*);
+void deq_set(deq*, int, void*);
+void* deq_index(deq*, int);
 
 void deq_swap(deq*, int, int);
 

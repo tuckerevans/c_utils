@@ -101,6 +101,16 @@ deq *root;
 	root->base = tmp;
 }
 
+void deq_set(root, index, item)
+deq *root;
+int index;
+void *item;
+{
+	if (!root || !DEQ_IN_BOUNDS(root, index))
+		return;
+	root->base[(root->beg + index) % root->limit] = item;
+}
+
 void* deq_index(root, index)
 deq *root;
 int index;
