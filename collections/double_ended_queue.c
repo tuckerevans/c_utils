@@ -71,6 +71,16 @@ deq *root;
 	return (root->limit - root->beg) + (root->end);
 }
 
+int deq_capacity(root)
+deq *root;
+{
+	if (!root) {
+		return -1;
+	} else {
+		return root->limit;
+	}
+}
+
 void deq_resize(root)
 deq *root;
 {
