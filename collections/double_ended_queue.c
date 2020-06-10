@@ -107,15 +107,10 @@ int index;
 {
 	void **tmp;
 
-	if (!root || index > root->limit
-			|| (index >= root->end && index < root->beg))
+	if (!root || !DEQ_IN_BOUNDS(root,index))
 		return NULL;
 
-	index = (root->beg + index) % root->limit;
-	if (index >= root->end)
-		return NULL;
-
-	return root->base[index];
+	return root->base[(root->beg + index) % root->limit];
 }
 
 void deq_push_back(root, item)
