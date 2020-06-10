@@ -5,10 +5,15 @@
 
 #include <stdio.h>
 
+/*Checks bounds for index (y) in queue*/
+#define DEQ_IN_BOUNDS(x, y) (y < deq_size(x)) \
+
 #define START_SIZE 64;
 
 /*TODO add returned error codes for current void functions
  * (resize, push, etc.)
+ *
+ * Should all functions return a status code and take in a dest argument?
  */
 
 /* Double ended queue as a circular buffer
@@ -184,6 +189,9 @@ void* deq_swap_rm_front(root, index)
 deq *root;
 int index;
 {
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
+
 	deq_swap(root, 0, index);
 	return deq_pop_front(root);
 }
@@ -192,6 +200,9 @@ void* deq_swap_rm_back(root, index)
 deq *root;
 int index;
 {
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
+
 	deq_swap(root,deq_size(root) - 1,index);
 	return deq_pop_back(root);
 }
@@ -200,15 +211,10 @@ void deq_remove(root, index)
 deq *root;
 int index;
 {
-	if (!root || index > root->limit)
+	if (!root || !DEQ_IN_BOUNDS(root,index));
 		return;
 
 	index = (root->beg + index) % root->limit;
-
-	/*Bounds check*/
-	if ((root->beg <= root->end && index < root->beg || index >= root->end)
-			|| (index >= root->end && index < root->beg))
-		return;
 
 	root->base[index] = NULL;
 
