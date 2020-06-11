@@ -88,7 +88,7 @@ deq *root;
 	int size;
 
 	tmp = malloc(root->limit * 2 * sizeof(void*));
-	assert(root->base);
+	assert(tmp);
 
 	if (root->beg <= root->end) {
 		tmp = memcpy(tmp, root->base + root->beg,
@@ -404,4 +404,38 @@ deq *root;
 		return NULL;
 
 	return root->base[(root->end - 1) % root->limit];
+}
+
+void deq_reserve(root, size)
+deq *root;
+int size;
+{
+	void **tmp;
+	int i, cur_size;
+
+	cur_size = deq_size(root);
+	for (i = root->limit; i - cur_size < size; i*=2);
+
+	tmp = malloc(i * sizeof(void*));
+	assert(tmp);
+
+	if (root->beg <= root->end) {
+		tmp = memcpy(tmp, root->base + root->beg,
+				deq_size(root) * sizeof(void*));
+	} else {
+		/*copy beg<->limit*/
+		size = root->limit - root->beg;
+		tmp = memcpy(tmp, root->base + root->beg, size * sizeof(void*));
+		assert(tmp);
+
+		/*copy base<->end*/
+		tmp = memcpy(tmp + size, root->base,
+				root->end * sizeof(void*));
+		assert(tmp);
+	}
+
+	root->limit *= 2;
+
+	free(root->base);
+	root->base = tmp;
 }

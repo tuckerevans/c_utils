@@ -36,12 +36,8 @@ void deq_swap(deq*, int, int);
 
 /*Note: Does not currently reduce memory footprint*/
 void deq_truncate(deq*, int);
+void deq_reserve(deq*, int);
 
 void deq_remove(deq*, int);
 void deq_print(deq*, char* (void*));
-
-
-/*TODO
- * resevee
- */
 #endif
