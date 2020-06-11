@@ -111,16 +111,6 @@ deq *root;
 	root->base = tmp;
 }
 
-void deq_set(root, index, item)
-deq *root;
-int index;
-void *item;
-{
-	if (!root || !DEQ_IN_BOUNDS(root, index))
-		return;
-	root->base[(root->beg + index) % root->limit] = item;
-}
-
 void* deq_index(root, index)
 deq *root;
 int index;
@@ -131,25 +121,6 @@ int index;
 		return NULL;
 
 	return root->base[(root->beg + index) % root->limit];
-}
-
-void deq_push_back(root, item)
-deq *root;
-void *item;
-{
-	void **tmp;
-
-	if (!root)
-		return;
-
-	if (root->end >= root->limit)
-		deq_resize(root);
-
-	root->base[root->end++] = item;
-	root->end %= root->limit;
-
-	if (root->end == root->beg)
-		root->end = root->limit;
 }
 
 void deq_push_front(root, item)
@@ -171,6 +142,35 @@ void *item;
 
 	if (root->end == root->beg)
 		root->end = root->limit;
+}
+
+void deq_push_back(root, item)
+deq *root;
+void *item;
+{
+	void **tmp;
+
+	if (!root)
+		return;
+
+	if (root->end >= root->limit)
+		deq_resize(root);
+
+	root->base[root->end++] = item;
+	root->end %= root->limit;
+
+	if (root->end == root->beg)
+		root->end = root->limit;
+}
+
+void deq_set(root, index, item)
+deq *root;
+int index;
+void *item;
+{
+	if (!root || !DEQ_IN_BOUNDS(root, index))
+		return;
+	root->base[(root->beg + index) % root->limit] = item;
 }
 
 void* deq_pop_front(root)
@@ -220,6 +220,32 @@ int index;
 
 	deq_swap(root,deq_size(root) - 1,index);
 	return deq_pop_back(root);
+}
+
+void deq_swap(root, i, j)
+deq *root;
+int i, j;
+{
+	int len;
+	void *tmp;
+
+	if (!root)
+		return;
+
+	len = deq_size(root);
+
+	if (i >= len || j >= len)
+		return;
+
+	i += root->beg;
+	i %= root->limit;
+
+	j += root->beg;
+	j %= root->limit;
+
+	tmp = root->base[i];
+	root->base[i] = root->base[j];
+	root->base[j] = tmp;
 }
 
 void deq_remove(root, index)
@@ -311,32 +337,6 @@ deq *root;
 	copy->end = root->end;
 
 	return copy;
-}
-
-void deq_swap(root, i, j)
-deq *root;
-int i, j;
-{
-	int len;
-	void *tmp;
-
-	if (!root)
-		return;
-
-	len = deq_size(root);
-
-	if (i >= len || j >= len)
-		return;
-
-	i += root->beg;
-	i %= root->limit;
-
-	j += root->beg;
-	j %= root->limit;
-
-	tmp = root->base[i];
-	root->base[i] = root->base[j];
-	root->base[j] = tmp;
 }
 
 /*Note: Does not currently reduce memory footprint*/

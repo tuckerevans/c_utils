@@ -176,6 +176,30 @@ deq_push_back(queue, NULL);
 assert(deq_size(queue) == 1);
 ----
 
++void deq_set(deq *self, int index, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sets the element at position +index+ in +self+ to +item+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "double_ended_queue.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+deq *queue = deq_new();
+deq_push_back(queue, str_dup(str1));
+deq_push_back(queue, str_dup(str2));
+
+deq_set(queue, 0, str2);
+
+assert(str_cmp(deq_pop_back(queue), str2) == 0);
+assert(str_cmp(deq_pop_back(queue), str2) == 0);
+----
+
 +void* deq_pop_front(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pops an item off of the front of the queue +self+.
@@ -218,30 +242,6 @@ deq_push_back(queue, str_dup(str2));
 
 assert(str_cmp(deq_pop_back(queue), str2) == 0);
 assert(str_cmp(deq_pop_back(queue), str1) == 0);
-----
-
-+void deq_set(deq *self, int index, void *item)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Sets the element at position +index+ in +self+ to +item+.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "double_ended_queue.h"
-#include <string.h>
-
-char *str1 = "ONE";
-char *str2 = "TWO";
-
-deq *queue = deq_new();
-deq_push_back(queue, str_dup(str1));
-deq_push_back(queue, str_dup(str2));
-
-deq_set(queue, 0, str2);
-
-assert(str_cmp(deq_pop_back(queue), str2) == 0);
-assert(str_cmp(deq_pop_back(queue), str2) == 0);
 ----
 
 +void* deq_index(deq *self, int index)+
