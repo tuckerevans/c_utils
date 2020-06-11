@@ -5,11 +5,27 @@
 
 #include <stdio.h>
 
+/*Checks bounds for index (y) in queue*/
+#define DEQ_IN_BOUNDS(x, y) (y < deq_size(x)) \
+
 #define START_SIZE 64;
 
-struct double_ended_queeu {
-	void **base, **end, **beg;
-	int i, limit;
+/*TODO add returned error codes for current void functions
+ * (resize, push, etc.)
+ *
+ * Should all functions return a status code and take in a dest argument?
+ */
+
+/* Double ended queue as a circular buffer
+ * base is pointer to buffer.
+ * beg: postiton of the first element is stored.
+ * end: position for the next element to be stored.
+ * limit: the maximum number of elements.
+ */
+
+struct double_ended_queue {
+	void **base;
+	int beg, end, limit;
 };
 
 deq* deq_new()
@@ -20,7 +36,8 @@ deq* deq_new()
 	assert(root);
 
 	root->limit = START_SIZE;
-	root->base = root->end = root->beg = malloc(root->limit * sizeof(void*));
+	root->beg = root->end = 0;
+	root->base = malloc(root->limit * sizeof(void*));
 	assert(root->base);
 
 	return root;
@@ -35,7 +52,8 @@ int n;
 	assert(root);
 
 	root->limit = n;
-	root->base = root->end = root->beg = malloc(root->limit * sizeof(void*));
+	root->beg = root->end = 0;
+	root->base = malloc(root->limit * sizeof(void*));
 	assert(root->base);
 
 	return root;
@@ -44,102 +62,298 @@ int n;
 int deq_size(root)
 deq *root;
 {
+	if (!root)
+		return -1;
+
+	if (root->beg <= root->end)
+		return (root->end - root->beg);
+
+	return (root->limit - root->beg) + (root->end);
+}
+
+int deq_capacity(root)
+deq *root;
+{
 	if (!root) {
 		return -1;
+	} else {
+		return root->limit;
 	}
-	return (root->end - root->beg);
 }
 
 void deq_resize(root)
 deq *root;
 {
-	if (root->beg != root->base) {
-		memmove(root->base, root->beg, root->end - root->beg);
-		root->end = root->base + deq_size(root);
-		root->beg = root->base;
+	void **tmp;
+	int size;
+
+	tmp = malloc(root->limit * 2 * sizeof(void*));
+	assert(tmp);
+
+	if (root->beg <= root->end) {
+		tmp = memcpy(tmp, root->base + root->beg,
+				deq_size(root) * sizeof(void*));
 	} else {
-		root->base = malloc(root->limit * 2 * sizeof(void*));
-		assert(root->base);
+		/*copy beg<->limit*/
+		size = root->limit - root->beg;
+		tmp = memcpy(tmp, root->base + root->beg, size * sizeof(void*));
+		assert(tmp);
 
-
-		root->base = memcpy(root->base, root->beg, root->limit * sizeof(void*));
-		assert(root->base);
-
-
-		root->end = root->base + deq_size(root);
-		root->limit = root->limit * 2;
-
-		free(root->beg);
-		root->beg = root->base;
-	}
-}
-
-void deq_push_back(root, item)
-deq *root;
-void *item;
-{
-	if (!root) {
-		return;
-	}
-	if (root->end == root->base + root->limit) {
-		deq_resize(root);
+		/*copy base<->end*/
+		tmp = memcpy(tmp + size, root->base,
+				root->end * sizeof(void*));
+		assert(tmp);
 	}
 
-	*(root->end++) = item;
-}
+	root->limit *= 2;
 
-void* deq_pop_front(root)
-deq *root;
-{
-	void* tmp;
-	if (!root || root->beg == root->end) {
-		return NULL;
-	}
-
-	return tmp = *(root->beg++);
+	free(root->base);
+	root->base = tmp;
 }
 
 void* deq_index(root, index)
 deq *root;
 int index;
 {
-	if (!root || root->beg + index >= root->end) {
+	void **tmp;
+
+	if (!root || !DEQ_IN_BOUNDS(root,index))
 		return NULL;
+
+	return root->base[(root->beg + index) % root->limit];
+}
+
+void deq_push_front(root, item)
+deq *root;
+void *item;
+{
+	void **tmp;
+
+	if (!root)
+		return;
+
+	if (root->end >= root->limit)
+		deq_resize(root);
+
+	--root->beg;
+	root->beg %= root->limit;
+
+	root->base[root->beg] = item;
+
+	if (root->end == root->beg)
+		root->end = root->limit;
+}
+
+void deq_push_back(root, item)
+deq *root;
+void *item;
+{
+	void **tmp;
+
+	if (!root)
+		return;
+
+	if (root->end >= root->limit)
+		deq_resize(root);
+
+	root->base[root->end++] = item;
+	root->end %= root->limit;
+
+	if (root->end == root->beg)
+		root->end = root->limit;
+}
+
+void deq_set(root, index, item)
+deq *root;
+int index;
+void *item;
+{
+	if (!root || !DEQ_IN_BOUNDS(root, index))
+		return;
+	root->base[(root->beg + index) % root->limit] = item;
+}
+
+void deq_insert(root, index, item)
+deq *root;
+int index;
+void *item;
+{
+	if (!root)
+		return;
+
+	if (index > deq_size(root))
+		return;
+
+	if (root->end >= root->limit)
+		deq_resize(root);
+
+	index = (root->beg + index) % root->limit;
+
+	if (root->beg < root->end) {
+		memmove(root->base + index + 1, root->base + index,
+				(root->end - index) * sizeof(void*));
+		++root->end;
+		root->end = root->end % root->limit;
+	} else if (index < root->end) {
+		memmove(root->base + index + 1,
+				root->base + index,
+				(root->end - index) * sizeof(void*));
+		++root->end;
+	} else {
+		memmove(root->base + root->beg - 1, root->base + root->beg,
+				(index - root->beg) * sizeof(void*));
+		--root->beg;
 	}
 
-	return root->beg[index];
+	if (root->end == root->beg)
+		root->end = root->limit;
+
+	root->base[index] = item;
+}
+
+void* deq_pop_front(root)
+deq *root;
+{
+	void* tmp;
+	if (!root || root->beg == root->end)
+		return NULL;
+
+	tmp = root->base[root->beg];
+
+	++root->beg;
+	root->beg %= root->limit;
+
+	return tmp;
 }
 
 void* deq_pop_back(root)
 deq *root;
 {
-	void* tmp;
-	if (!root || root->end == root->beg) {
+	if (!root || root->end == root->beg)
 		return NULL;
-	}
 
-	return tmp = *(--root->end);
+	--root->end;
+	root->end %= root->limit;
+
+	return root->base[root->end];
 }
 
+void* deq_swap_rm_front(root, index)
+deq *root;
+int index;
+{
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
+
+	deq_swap(root, 0, index);
+	return deq_pop_front(root);
+}
+
+void* deq_swap_rm_back(root, index)
+deq *root;
+int index;
+{
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
+
+	deq_swap(root,deq_size(root) - 1,index);
+	return deq_pop_back(root);
+}
+
+void deq_swap(root, i, j)
+deq *root;
+int i, j;
+{
+	int len;
+	void *tmp;
+
+	if (!root)
+		return;
+
+	len = deq_size(root);
+
+	if (i >= len || j >= len)
+		return;
+
+	i += root->beg;
+	i %= root->limit;
+
+	j += root->beg;
+	j %= root->limit;
+
+	tmp = root->base[i];
+	root->base[i] = root->base[j];
+	root->base[j] = tmp;
+}
+
+void deq_remove(root, index)
+deq *root;
+int index;
+{
+	if (!root || !DEQ_IN_BOUNDS(root,index));
+		return;
+
+	index = (root->beg + index) % root->limit;
+
+	root->base[index] = NULL;
+
+	if (root->beg < root->end || index >= root->beg) {
+		memmove(root->base + root->beg + 1,
+				root->base + root->beg,
+				(index - root->beg) * sizeof(void*));
+		++root->beg;
+	} else {
+		memmove(root->base + index, root->base + index + 1,
+				(--root->end - index) * sizeof(void*));
+	}
+}
+
+/* Note: Elements are not freed
+ * deq_clear should be called before if they are no longer needed.
+ */
 void deq_free(root)
 deq *root;
 {
 	free(root->base);
 	root->base = NULL;
-	root->end = NULL;
-	root->beg = NULL;
 
 	free(root);
 }
 
-void deq_print(root)
+void deq_clear(root)
+deq *root;
+{
+	int i, size;
+
+	size = deq_size(root);
+	for (i = 0; i < size; i++) {
+		free(deq_index(root, i));
+	}
+}
+
+void deq_print(root, to_string)
+deq *root;
+char* to_string(void*);
+{
+	int i, size;;
+
+	size = deq_size(root);
+
+	printf("[");
+	for (i = 0; i < size; i++) {
+		printf("%s,", to_string(deq_index(root, i)));
+	}
+	printf("\b]\n");
+}
+
+void deq_debug_print(root)
 deq *root;
 {
 	void **tmp;
 
-	fprintf(stderr, "VEC[b: %p, p: %p, n:%p]:\n\t ",
+	fprintf(stderr, "VEC[b: %p, beg: %d, end:%d]:\n\t ",
 			root->base, root->beg, root->end);
-	for (tmp = root->beg; tmp < root->end; tmp++){
+	for (tmp = root->base; tmp < root->base + root->limit; tmp++){
 		fprintf(stderr, "[%p]", *tmp);
 	}
 	fprintf(stderr, "\n");
@@ -151,11 +365,77 @@ deq *root;
 	deq *copy;
 
 	copy = deq_with_capacity(root->limit);
-
-	copy->base = memcpy(copy->base, root->beg,
-			deq_size(root) * sizeof(void*));
 	assert(copy->base);
 
-	copy->beg = copy->base;
-	copy->end = copy->base + deq_size(root);
+	copy->base = memcpy(copy->base, root->base,
+			root->limit * sizeof(void*));
+	assert(copy->base);
+
+	copy->beg = root->beg;
+	copy->end = root->end;
+
+	return copy;
+}
+
+/*Note: Does not currently reduce memory footprint*/
+void deq_truncate(root, size)
+deq *root;
+int size;
+{
+	if (!root || size > deq_size(root))
+		return;
+
+	root->end = (root->beg + size) % root->limit;
+}
+
+void* deq_front(root)
+deq *root;
+{
+	if (!root)
+		return NULL;
+
+	return root->base[root->beg];
+}
+
+void* deq_back(root)
+deq *root;
+{
+	if (!root)
+		return NULL;
+
+	return root->base[(root->end - 1) % root->limit];
+}
+
+void deq_reserve(root, size)
+deq *root;
+int size;
+{
+	void **tmp;
+	int i, cur_size;
+
+	cur_size = deq_size(root);
+	for (i = root->limit; i - cur_size < size; i*=2);
+
+	tmp = malloc(i * sizeof(void*));
+	assert(tmp);
+
+	if (root->beg <= root->end) {
+		tmp = memcpy(tmp, root->base + root->beg,
+				deq_size(root) * sizeof(void*));
+	} else {
+		/*copy beg<->limit*/
+		size = root->limit - root->beg;
+		tmp = memcpy(tmp, root->base + root->beg, size * sizeof(void*));
+		assert(tmp);
+
+		/*copy base<->end*/
+		tmp = memcpy(tmp + size, root->base,
+				root->end * sizeof(void*));
+		assert(tmp);
+	}
+
+	root->limit *= 2;
+
+	free(root->base);
+	root->base = tmp;
 }
