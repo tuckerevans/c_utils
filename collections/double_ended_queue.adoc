@@ -1,7 +1,7 @@
 Double Ended Queue
 ==================
 Tucker Evans
-v0.3, 2020-06-10
+v1.0, 2020-06-10
 
 A double ended queue implemented in a circular buffer.
 
