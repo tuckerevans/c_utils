@@ -173,6 +173,44 @@ void *item;
 	root->base[(root->beg + index) % root->limit] = item;
 }
 
+void deq_insert(root, index, item)
+deq *root;
+int index;
+void *item;
+{
+	if (!root)
+		return;
+
+	if (index > deq_size(root))
+		return;
+
+	if (root->end >= root->limit)
+		deq_resize(root);
+
+	index = (root->beg + index) % root->limit;
+
+	if (root->beg < root->end) {
+		memmove(root->base + index + 1, root->base + index,
+				(root->end - index) * sizeof(void*));
+		++root->end;
+		root->end = root->end % root->limit;
+	} else if (index < root->end) {
+		memmove(root->base + index + 1,
+				root->base + index,
+				(root->end - index) * sizeof(void*));
+		++root->end;
+	} else {
+		memmove(root->base + root->beg - 1, root->base + root->beg,
+				(index - root->beg) * sizeof(void*));
+		--root->beg;
+	}
+
+	if (root->end == root->beg)
+		root->end = root->limit;
+
+	root->base[index] = item;
+}
+
 void* deq_pop_front(root)
 deq *root;
 {

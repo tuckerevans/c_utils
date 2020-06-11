@@ -1,7 +1,7 @@
 Double Ended Queue
 ==================
 Tucker Evans
-v0.1, 2020-06-10
+v0.2, 2020-06-10
 
 A double ended queue implemented in a circular buffer.
 
@@ -198,6 +198,32 @@ deq_set(queue, 0, str2);
 
 assert(str_cmp(deq_pop_back(queue), str2) == 0);
 assert(str_cmp(deq_pop_back(queue), str2) == 0);
+----
+
++void deq_insert(deq *self, int index, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inserts +item+ into queue +self+ at index +index+, all items after the index
+are pushed toward the end.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "double_ended_queue.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+char *str3 = "THREE";
+
+deq *queue = deq_new();
+deq_push_back(queue, str_dup(str1));
+deq_push_back(queue, str_dup(str2));
+
+deq_insert(queue, 1, str_dup(str3));
+
+assert(str_cmp(deq_index(queue, 1), str3) == 0);
+assert(str_cmp(deq_index(queue, 2), str2) == 0);
 ----
 
 +void* deq_pop_front(deq *self)+

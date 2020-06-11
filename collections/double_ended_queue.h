@@ -23,6 +23,7 @@ void deq_clear(deq*);
 void deq_push_front(deq*, void*);
 void deq_push_back(deq*, void*);
 void deq_set(deq*, int, void*);
+void deq_insert(deq*, int, void*);
 void* deq_pop_front(deq*);
 void* deq_pop_back(deq*);
 void* deq_index(deq*, int);
@@ -42,6 +43,5 @@ void deq_print(deq*, char* (void*));
 
 /*TODO
  * resevee
- * insert
  */
 #endif
