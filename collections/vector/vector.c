@@ -51,3 +51,13 @@ vec *root;
 	return root->end;
 }
 
+void vec_resize(root)
+vec *root;
+{
+	if (!root)
+		return;
+
+	root->base = reallocarray(root->base, root->limit * 2, sizeof(void*));
+	assert(root->base);
+}
+
