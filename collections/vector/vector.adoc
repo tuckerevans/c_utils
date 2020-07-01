@@ -1,0 +1,65 @@
+Vector
+======
+Tucker Evans
+v0.1, 2020-07-01
+
+A basic vector, that hold pointers to your data structures.
+
+NOTE: There is currently no way to distinquish between a failed retrieval
+(pop, index, back, etc.) and returning a NULL value. Keep this in mind if
+you plan on storing NULL values in the vector, there are plans to fix this in
+the future.
+
+Types
+-----
+
++vec+
+~~~~~
+This structure holds all internal information regarding a vector.
+All functions (except constructors) expect a pointer to this struct as their
+first parameter.
+
+Functions
+---------
+
++vec* vec_new()+
+~~~~~~~~~~~~~~~~
+Constructs an empty vector.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+----
+
+`vec* vec_with_capacity(int capacity)`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Constructs an empty vector with space for +capacity+ items.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_with_capacity(16);
+----
+
++int vec_size(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the number of elements in vector +self+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+assert(vec_size(vector) == 0);
+vec_push_back(vector, NULL);
+assert(vec_size(vector) == 1);
+----
