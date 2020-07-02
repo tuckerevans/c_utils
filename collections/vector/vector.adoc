@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.1, 2020-07-01
+v0.2, 2020-07-02
 
 A basic vector, that hold pointers to your data structures.
 
@@ -61,5 +61,20 @@ Examples
 vec *vector = vec_new();
 assert(vec_size(vector) == 0);
 vec_push_back(vector, NULL);
+assert(vec_size(vector) == 1);
+----
+
++void vec_push(vec *self, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pushes +item+ into back of +self+. This may cause a resize of the internal buffer.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+vec_push(vector, NULL);
 assert(vec_size(vector) == 1);
 ----

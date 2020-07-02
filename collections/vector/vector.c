@@ -61,3 +61,17 @@ vec *root;
 	assert(root->base);
 }
 
+void vec_push(root, item)
+vec *root;
+void *item;
+{
+	if (!root) {
+		return;
+	}
+
+	if (root->end >= root->limit) {
+		vec_resize(root);
+	}
+
+	root->base[root->end++] = item;
+}
