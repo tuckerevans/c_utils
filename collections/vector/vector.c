@@ -75,3 +75,14 @@ void *item;
 
 	root->base[root->end++] = item;
 }
+
+void* vec_index(root, index)
+vec *root;
+int index;
+{
+	if (!root || index >= root->end || index < 0) {
+		return NULL;
+	}
+
+	return root->base[index];
+}
