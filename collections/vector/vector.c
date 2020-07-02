@@ -86,3 +86,13 @@ int index;
 
 	return root->base[index];
 }
+
+void* vec_pop(root)
+vec *root;
+{
+	if (!root || root->end == 0) {
+		return NULL;
+	}
+
+	return root->base[--root->end];
+}

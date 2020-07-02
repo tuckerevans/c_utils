@@ -8,4 +8,5 @@ vec* vec_with_capacity(int);
 int vec_size(vec*);
 void vec_push(vec*, void*);
 void* vec_index(vec*, int);
+void* vec_pop(vec*);
 #endif
