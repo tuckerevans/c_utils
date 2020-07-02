@@ -96,3 +96,25 @@ vec *root;
 
 	return root->base[--root->end];
 }
+
+void vec_free(root)
+vec *root;
+{
+	free(root->base);
+	root->base = NULL;
+
+	free(root);
+}
+
+void vec_clear(root)
+vec *root;
+{
+	int i;
+
+	for (i = 0; i < root->end; i++) {
+		free(vec_index(root, i));
+	}
+
+	root->end = 0;
+}
+

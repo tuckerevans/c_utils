@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.4, 2020-07-02
+v0.5, 2020-07-02
 
 A basic vector, that hold pointers to your data structures.
 
@@ -122,4 +122,50 @@ vec_push(vector, str_dup(str2));
 
 assert(str_cmp(vec_pop(vector), str2) == 0);
 assert(str_cmp(vec_pop(vector), str1) == 0);
+----
+
+[[vec_free]]
++void vec_free(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Frees all internal memory and +self+.
+
+NOTE: All item pointers are still valid after a call to
+<<vec_free,+vec_free()+>>, <<vec_clear,+vec_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+vec_free(vector);
+----
+
+[[vec_clear]]
++void vec_clear(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Free all elements within vector +self+, and sets vector to empty (size 0).
+
+NOTE: Does not free internal memory of +self+ or +self+ itself, if this is desired
+<<vec_free,+vec_free()+>> should be called immediatly after this.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+vec *vector = vec_new();
+vec_push_back(vector, str_dup(str1));
+vec_push_back(vector, str_dup(str2));
+
+vec_clear(vector);
+assert(vec_size(vector) == 0);
+vec_free(vector);
 ----
