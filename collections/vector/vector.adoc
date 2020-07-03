@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.7, 2020-07-03
+v0.7.1, 2020-07-03
 
 A basic vector, that hold pointers to your data structures.
 
@@ -14,14 +14,14 @@ Types
 -----
 
 +vec+
-~~~~~
+
 This structure holds all internal information regarding a vector.
 All functions (except constructors) expect a pointer to this struct as their
 first parameter.
 
 Functions
 ---------
-
+[[vec_new]]
 +vec* vec_new()+
 ~~~~~~~~~~~~~~~~
 Constructs an empty vector.
@@ -48,6 +48,7 @@ Examples
 vec *vector = vec_with_capacity(16);
 ----
 
+[[vec_size]]
 +int vec_size(vec *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the number of elements in vector +self+.
@@ -64,6 +65,7 @@ vec_push_back(vector, NULL);
 assert(vec_size(vector) == 1);
 ----
 
+[[vec_push]]
 +void vec_push(vec *self, void *item)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pushes +item+ into back of +self+. This may cause a resize of the internal buffer.
@@ -79,6 +81,7 @@ vec_push(vector, NULL);
 assert(vec_size(vector) == 1);
 ----
 
+[[vec_index]]
 +void* vec_index(vec *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the element at position +index+ of +self+.
@@ -102,6 +105,7 @@ vec_push(vector, str_dup(str3));
 assert(str_cmp(vec_index(vector, 1), str2) == 0);
 ----
 
+[[vec_pop]]
 +void* vec_pop(vec *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pops an item off of the back of the vector +self+.
