@@ -142,6 +142,16 @@ vec *root;
 	return root->base[--root->end];
 }
 
+void* vec_back(root)
+vec *root;
+{
+	if (!root || root->end == 0) {
+		return NULL;
+	}
+
+	return root->base[root->end - 1];
+}
+
 void* vec_index(root, index)
 vec *root;
 int index;

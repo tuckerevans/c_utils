@@ -16,6 +16,7 @@ void vec_print(vec*, char* (void*));
 /*data*/
 void vec_push(vec*, void*);
 void* vec_pop(vec*);
+void* vec_back(vec*);
 
 void* vec_index(vec*, int);
 

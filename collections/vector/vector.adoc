@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.8.1, 2020-07-03
+v0.9, 2020-07-03
 
 A basic vector, that hold pointers to your data structures.
 
@@ -185,6 +185,29 @@ vec_push(vector, str_dup(str2));
 assert(str_cmp(vec_pop(vector), str2) == 0);
 assert(str_cmp(vec_pop(vector), str1) == 0);
 ----
+
+[[vec_back]]
++void* vec_back(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the element at the back of the vector +self+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+vec *vector = vec_new();
+vec_push(vector, str_dup(str1));
+vec_push(vector, str_dup(str2));
+
+assert(strcmp(vec_back(vector), str2) == 0);
+----
+
 
 [[vec_index]]
 +void* vec_index(vec *self, int index)+
