@@ -9,6 +9,7 @@ vec* vec_with_capacity(int);
 
 /*management*/
 int vec_size(vec*);
+int vec_capacity(vec*);
 vec* vec_cp(vec*);
 void vec_print(vec*, char* (void*));
 

@@ -63,6 +63,16 @@ vec *root;
 	return root->end;
 }
 
+int vec_capacity(root)
+vec *root;
+{
+	if (!root) {
+		return -1;
+	}
+	
+	return root->limit;
+}
+
 void vec_resize(root)
 vec *root;
 {
