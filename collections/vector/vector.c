@@ -190,6 +190,20 @@ int i,j;
 	return;
 }
 
+void* vec_swap_pop(root, i)
+vec *root;
+int i;
+{
+	void *tmp;
+	int j;
+
+	if (!root || i >= root->end || i < 0 || root->end <= 0)
+		return NULL;
+
+	vec_swap(root, i, root->end - 1);
+	return vec_pop(root);
+}
+
 void vec_clear(root)
 vec *root;
 {
