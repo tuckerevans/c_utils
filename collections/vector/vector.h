@@ -11,4 +11,5 @@ void* vec_index(vec*, int);
 void* vec_pop(vec*);
 void vec_free(vec*);
 void vec_clear(vec*);
+void vec_print(vec*, char* (void*));
 #endif

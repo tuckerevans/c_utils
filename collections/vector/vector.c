@@ -118,3 +118,29 @@ vec *root;
 	root->end = 0;
 }
 
+void vec_print(root, to_string)
+vec *root;
+char* to_string(void*);
+{
+	int i;
+
+	printf("[");
+	for(i = 0; i < root->end; i++) {
+		printf("%s", to_string(vec_index(root, i)));
+	}
+	printf("\b]\n");
+
+}
+
+void vec_debug_print(root)
+vec *root;
+{
+	int i;
+
+	fprintf(stderr, "VEC[base: %p, end: %p, limit:%p]:\n\t ",
+			root->base, root->end, root->limit);
+	for (i=0; i < root->end; i++){
+		fprintf(stderr, "[%p]", vec_index(root,i));
+	}
+	fprintf(stderr, "\n");
+}
