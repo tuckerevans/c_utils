@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.6, 2020-07-02
+v0.7, 2020-07-03
 
 A basic vector, that hold pointers to your data structures.
 
@@ -211,4 +211,28 @@ Output:
 ----
 VEC_CONTENTS:
 	[ONE,TWO,THREE]
+----
+
+[[vec_cp]]
++vec* vec_cp(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Returns a copy of the vector +self+. All elements are kept in the same order.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+vec *vector = vec_with_capacity(16);
+vec_push_back(vector, str_dup(str1));
+vec_push_back(vector, str_dup(str2));
+
+vec *new = vec_cp(vector);
+assert(strcmp(vec_pop_back, str2) == 0);
+assert(strcmp(vec_pop_back, str1) == 0);
 ----

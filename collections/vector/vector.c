@@ -144,3 +144,23 @@ vec *root;
 	}
 	fprintf(stderr, "\n");
 }
+
+vec* vec_cp(root)
+vec *root;
+{
+	vec *copy;
+
+	if (!root)
+		return NULL;
+
+	copy = vec_with_capacity(root->limit);
+
+	copy->base = memcpy(copy->base, root->base,
+			vec_size(root) * sizeof(void*));
+	assert(copy->base);
+
+	copy->end = root->end;
+	copy->limit = root->limit;
+
+	return copy;
+}
