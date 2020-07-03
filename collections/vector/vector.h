@@ -21,6 +21,9 @@ void* vec_back(vec*);
 void vec_set(vec*, int, void*);
 void* vec_index(vec*, int);
 
+void vec_swap(vec*, int, int);
+
+
 /*memory*/
 void vec_clear(vec*);
 void vec_free(vec*);

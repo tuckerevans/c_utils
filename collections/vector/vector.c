@@ -174,6 +174,22 @@ int index;
 	return root->base[index];
 }
 
+void vec_swap(root, i, j)
+vec *root;
+int i,j;
+{
+	void *tmp;
+
+	if (!root || i >= root->end || i < 0 || j >= root->end || j < 0)
+		return;
+
+	tmp = root->base[i];
+	root->base[i] = root->base[j];
+	root->base[j] = tmp;
+
+	return;
+}
+
 void vec_clear(root)
 vec *root;
 {
