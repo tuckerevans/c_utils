@@ -135,7 +135,7 @@ void *item;
 void* vec_pop(root)
 vec *root;
 {
-	if (!root || root->end == 0) {
+	if (!root || root->end <= 0) {
 		return NULL;
 	}
 
