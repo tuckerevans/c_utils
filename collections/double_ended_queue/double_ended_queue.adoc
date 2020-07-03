@@ -112,8 +112,9 @@ assert(strcmp(deq_pop_back, str1) == 0);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Frees all internal memory and +self+.
 
-NOTE: All item pointers are still valid after a call to +deq_free+, deq_clear
-should be called before if they are no longer needed to avoid memory leaks.
+NOTE: All item pointers are still valid after a call to
+<<deq_free,+deq_free()+>>, <<deq_clear,+deq_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
 
 Examples
 ^^^^^^^^
@@ -130,7 +131,8 @@ deq_free(queue);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Free all elements within queue +self+, and sets queue to empty (size 0).
 
-NOTE: Does not free internal memory of +self+ or +self+ itself, if this is desired +deq_free()+ should be called immediatly after this.
+NOTE: Does not free internal memory of +self+ or +self+ itself, if this is
+desired <<deq_free,+deq_free()+>> should be called immediately after this.
 
 Examples
 ^^^^^^^^
@@ -379,7 +381,7 @@ assert(str_cmp(deq_back(queue), str1) == 0);
 +void* deq_swap_rm_front(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Swaps front element with item at +index+, and pops item now at front.
-Does not keep order of elements, but faster that +deq_remove()+.
+Does not keep order of elements, but faster that <<deq_remove,+deq_remove()+>>.
 
 Examples
 ^^^^^^^^
@@ -407,7 +409,7 @@ assert(deq_size == 2);
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Swaps back element with item at +index+, and pops item now at back.
 Will return same element as +deq_remove(self, index)+.
-Does not keep order of elements, but faster that +deq_remove()+.
+Does not keep order of elements, but faster that <<deq_remove,+deq_remove()+>>.
 
 Examples
 ^^^^^^^^
