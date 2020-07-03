@@ -351,7 +351,7 @@ deq *root;
 {
 	void **tmp;
 
-	fprintf(stderr, "VEC[b: %p, beg: %d, end:%d]:\n\t ",
+	fprintf(stderr, "DEQ[base: %p, beg: %d, end:%d]:\n\t ",
 			root->base, root->beg, root->end);
 	for (tmp = root->base; tmp < root->base + root->limit; tmp++){
 		fprintf(stderr, "[%p]", *tmp);
