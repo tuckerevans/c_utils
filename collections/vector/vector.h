@@ -18,6 +18,7 @@ void vec_push(vec*, void*);
 void* vec_pop(vec*);
 void* vec_back(vec*);
 
+void vec_set(vec*, int, void*);
 void* vec_index(vec*, int);
 
 /*memory*/

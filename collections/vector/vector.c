@@ -152,6 +152,17 @@ vec *root;
 	return root->base[root->end - 1];
 }
 
+void vec_set(root, index, item)
+vec *root;
+int index;
+void *item;
+{
+	if (!root || index >= root->end || index < 0)
+		return;
+
+	root->base[index] = item;
+}
+
 void* vec_index(root, index)
 vec *root;
 int index;
