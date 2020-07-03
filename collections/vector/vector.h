@@ -3,14 +3,22 @@
 
 typedef struct vector vec;
 
+/*constructors*/
 vec* vec_new();
 vec* vec_with_capacity(int);
+
+/*management*/
 int vec_size(vec*);
-void vec_push(vec*, void*);
-void* vec_index(vec*, int);
-void* vec_pop(vec*);
-void vec_free(vec*);
-void vec_clear(vec*);
-void vec_print(vec*, char* (void*));
 vec* vec_cp(vec*);
+void vec_print(vec*, char* (void*));
+
+/*data*/
+void vec_push(vec*, void*);
+void* vec_pop(vec*);
+
+void* vec_index(vec*, int);
+
+/*memory*/
+void vec_clear(vec*);
+void vec_free(vec*);
 #endif

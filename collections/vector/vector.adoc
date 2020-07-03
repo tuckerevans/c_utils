@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.7.1, 2020-07-03
+v0.7.2, 2020-07-03
 
 A basic vector, that hold pointers to your data structures.
 
@@ -65,50 +65,10 @@ vec_push_back(vector, NULL);
 assert(vec_size(vector) == 1);
 ----
 
-[[vec_push]]
-+void vec_push(vec *self, void *item)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Pushes +item+ into back of +self+. This may cause a resize of the internal buffer.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "vector.h"
-
-vec *vector = vec_new();
-vec_push(vector, NULL);
-assert(vec_size(vector) == 1);
-----
-
-[[vec_index]]
-+void* vec_index(vec *self, int index)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Returns the element at position +index+ of +self+.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "vector.h"
-#include <string.h>
-
-char *str1 = "ONE";
-char *str2 = "TWO";
-char *str3 = "THREE";
-
-vec *vector = vec_new();
-vec_push(vector, str_dup(str1));
-vec_push(vector, str_dup(str2));
-vec_push(vector, str_dup(str3));
-
-assert(str_cmp(vec_index(vector, 1), str2) == 0);
-----
-
-[[vec_pop]]
-+void* vec_pop(vec *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Pops an item off of the back of the vector +self+.
+[[vec_cp]]
++vec* vec_cp(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Returns a copy of the vector +self+. All elements are kept in the same order.
 
 Examples
 ^^^^^^^^
@@ -120,58 +80,13 @@ Examples
 char *str1 = "ONE";
 char *str2 = "TWO";
 
-vec *vector = vec_new();
-vec_push(vector, str_dup(str1));
-vec_push(vector, str_dup(str2));
-
-assert(str_cmp(vec_pop(vector), str2) == 0);
-assert(str_cmp(vec_pop(vector), str1) == 0);
-----
-
-[[vec_free]]
-+void vec_free(vec *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Frees all internal memory and +self+.
-
-NOTE: All item pointers are still valid after a call to
-<<vec_free,+vec_free()+>>, <<vec_clear,+vec_clear()+>> should be called before
-if they are no longer needed to avoid memory leaks.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "vector.h"
-
-vec *vector = vec_new();
-vec_free(vector);
-----
-
-[[vec_clear]]
-+void vec_clear(vec *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Free all elements within vector +self+, and sets vector to empty (size 0).
-
-NOTE: Does not free internal memory of +self+ or +self+ itself, if this is desired
-<<vec_free,+vec_free()+>> should be called immediatly after this.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "vector.h"
-#include <string.h>
-
-char *str1 = "ONE";
-char *str2 = "TWO";
-
-vec *vector = vec_new();
+vec *vector = vec_with_capacity(16);
 vec_push_back(vector, str_dup(str1));
 vec_push_back(vector, str_dup(str2));
 
-vec_clear(vector);
-assert(vec_size(vector) == 0);
-vec_free(vector);
+vec *new = vec_cp(vector);
+assert(strcmp(vec_pop_back, str2) == 0);
+assert(strcmp(vec_pop_back, str1) == 0);
 ----
 
 [[vec_print]]
@@ -217,10 +132,26 @@ VEC_CONTENTS:
 	[ONE,TWO,THREE]
 ----
 
-[[vec_cp]]
-+vec* vec_cp(vec *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~
-Returns a copy of the vector +self+. All elements are kept in the same order.
+[[vec_push]]
++void vec_push(vec *self, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pushes +item+ into back of +self+. This may cause a resize of the internal buffer.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+vec_push(vector, NULL);
+assert(vec_size(vector) == 1);
+----
+
+[[vec_pop]]
++void* vec_pop(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pops an item off of the back of the vector +self+.
 
 Examples
 ^^^^^^^^
@@ -232,11 +163,80 @@ Examples
 char *str1 = "ONE";
 char *str2 = "TWO";
 
-vec *vector = vec_with_capacity(16);
+vec *vector = vec_new();
+vec_push(vector, str_dup(str1));
+vec_push(vector, str_dup(str2));
+
+assert(str_cmp(vec_pop(vector), str2) == 0);
+assert(str_cmp(vec_pop(vector), str1) == 0);
+----
+
+[[vec_index]]
++void* vec_index(vec *self, int index)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the element at position +index+ of +self+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+char *str3 = "THREE";
+
+vec *vector = vec_new();
+vec_push(vector, str_dup(str1));
+vec_push(vector, str_dup(str2));
+vec_push(vector, str_dup(str3));
+
+assert(str_cmp(vec_index(vector, 1), str2) == 0);
+----
+
+[[vec_clear]]
++void vec_clear(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Free all elements within vector +self+, and sets vector to empty (size 0).
+
+NOTE: Does not free internal memory of +self+ or +self+ itself, if this is desired
+<<vec_free,+vec_free()+>> should be called immediatly after this.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+vec *vector = vec_new();
 vec_push_back(vector, str_dup(str1));
 vec_push_back(vector, str_dup(str2));
 
-vec *new = vec_cp(vector);
-assert(strcmp(vec_pop_back, str2) == 0);
-assert(strcmp(vec_pop_back, str1) == 0);
+vec_clear(vector);
+assert(vec_size(vector) == 0);
+vec_free(vector);
+----
+
+[[vec_free]]
++void vec_free(vec *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Frees all internal memory and +self+.
+
+NOTE: All item pointers are still valid after a call to
+<<vec_free,+vec_free()+>>, <<vec_clear,+vec_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_new();
+vec_free(vector);
 ----
