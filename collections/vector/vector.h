@@ -22,6 +22,7 @@ void vec_set(vec*, int, void*);
 void* vec_index(vec*, int);
 
 void vec_insert(vec*, int, void*);
+void* vec_remove(vec*, int);
 
 void vec_swap(vec*, int, int);
 void* vec_swap_pop(vec*, int);

@@ -191,6 +191,22 @@ void *item;
 	root->base[index] = item;
 }
 
+void* vec_remove(root, index)
+vec *root;
+int index;
+{
+	void *tmp;
+
+	if (!root || index > root->end || index < 0)
+		return NULL;
+
+	tmp = vec_index(root, index);
+	memmove(root->base + index, root->base + index + 1,
+			(--root->end - index) * sizeof(void*));
+
+	return tmp;
+}
+
 void vec_swap(root, i, j)
 vec *root;
 int i,j;
