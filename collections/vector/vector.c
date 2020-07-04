@@ -174,6 +174,23 @@ int index;
 	return root->base[index];
 }
 
+void vec_insert(root, index, item)
+vec *root;
+int index;
+void *item;
+{
+	if (!root || index > root->end || index < 0)
+		return;
+
+	if (root->end >= root->limit)
+		vec_resize(root);
+
+	memmove(root->base + index + 1, root->base + index,
+			(root->end++ - index) * sizeof(void*));
+
+	root->base[index] = item;
+}
+
 void vec_swap(root, i, j)
 vec *root;
 int i,j;

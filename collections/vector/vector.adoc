@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.12, 2020-07-03
+v0.13, 2020-07-03
 
 A basic vector, that hold pointers to your data structures.
 
@@ -255,6 +255,33 @@ vec_push(vector, str_dup(str2));
 vec_push(vector, str_dup(str3));
 
 assert(str_cmp(vec_index(vector, 1), str2) == 0);
+----
+
+[[vec_insert]]
++void vec_insert(vec *self, int index, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inserts +item+ into vector +self+ at index +index+, all items after the index
+are pushed toward the end.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+char *str3 = "THREE";
+
+vec *vector = vec_new();
+vec_push(vector, str_dup(str1));
+vec_push(vector, str_dup(str2));
+
+vec_insert(vector, 1, str_dup(str3));
+
+assert(str_cmp(vec_index(vector, 1), str3) == 0);
+assert(str_cmp(vec_index(vector, 2), str2) == 0);
 ----
 
 [[vec_swap]]
