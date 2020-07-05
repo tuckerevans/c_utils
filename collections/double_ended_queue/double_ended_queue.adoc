@@ -1,7 +1,7 @@
 Double Ended Queue
 ==================
 Tucker Evans
-v1.0, 2020-06-10
+v1.0.1, 2020-06-10
 
 A double ended queue implemented in a circular buffer.
 
@@ -12,7 +12,6 @@ the future.
 
 Types
 -----
-
 +deq+
 ~~~~~
 This structure holds all internal information regarding a double ended queue.
@@ -21,7 +20,7 @@ first parameter.
 
 Functions
 ---------
-
+[[deq_new]]
 +deq* deq_new()+
 ~~~~~~~~~~~~~~~~
 Constructs an empty double ended queue.
@@ -35,6 +34,7 @@ Examples
 deq *queue = deq_new();
 ----
 
+[[deq_with_capacity]]
 `deq* deq_with_capacity(int capacity)`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Constructs an empty double ended queue with space for +capacity+ items.
@@ -48,6 +48,7 @@ Examples
 deq *queue = deq_with_capacity(16);
 ----
 
+[[deq_size]]
 +int deq_size(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the number of elements in queue +self+.
@@ -64,6 +65,7 @@ deq_push_back(queue, NULL);
 assert(deq_size(queue) == 1);
 ----
 
+[[deq_capacity]]
 +int deq_capacity(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the maximun number of elements in queue +self+ before the buffer needs
@@ -79,6 +81,7 @@ deq *queue = deq_with_capacity(16);
 assert(deq_capacity(queue) == 16);
 ----
 
+[[deq_cp]]
 +deq* deq_cp(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Returns a copy of the queue +self+.
@@ -104,12 +107,14 @@ assert(strcmp(deq_pop_back, str2) == 0);
 assert(strcmp(deq_pop_back, str1) == 0);
 ----
 
+[[deq_free]]
 +void deq_free(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 Frees all internal memory and +self+.
 
-NOTE: All item pointers are still valid after a call to +deq_free+, deq_clear
-should be called before if they are no longer needed to avoid memory leaks.
+NOTE: All item pointers are still valid after a call to
+<<deq_free,+deq_free()+>>, <<deq_clear,+deq_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
 
 Examples
 ^^^^^^^^
@@ -121,11 +126,13 @@ deq *queue = deq_new();
 deq_free(queue);
 ----
 
+[[deq_clear]]
 +void deq_clear(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Free all elements within queue +self+, and sets queue to empty (size 0).
 
-NOTE: Does not free internal memory of +self+ or +self+ itself, if this is desired +deq_free()+ should be called immediatly after this.
+NOTE: Does not free internal memory of +self+ or +self+ itself, if this is
+desired <<deq_free,+deq_free()+>> should be called immediately after this.
 
 Examples
 ^^^^^^^^
@@ -146,6 +153,7 @@ assert(deq_size(queue) == 0);
 deq_free(queue);
 ----
 
+[[deq_push_front]]
 +void deq_push_front(deq *self, void *item)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pushes +item+ into front of +self+. This may cause a resize of internal buffer.
@@ -161,6 +169,7 @@ deq_push_front(queue, NULL);
 assert(deq_size(queue) == 1);
 ----
 
+[[deq_push_back]]
 +void deq_push_back(deq *self, void *item)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pushes +item+ into back of +self+. This may cause a resize of internal buffer.
@@ -176,6 +185,7 @@ deq_push_back(queue, NULL);
 assert(deq_size(queue) == 1);
 ----
 
+[[deq_set]]
 +void deq_set(deq *self, int index, void *item)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Sets the element at position +index+ in +self+ to +item+.
@@ -200,6 +210,7 @@ assert(str_cmp(deq_pop_back(queue), str2) == 0);
 assert(str_cmp(deq_pop_back(queue), str2) == 0);
 ----
 
+[[deq_insert]]
 +void deq_insert(deq *self, int index, void *item)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Inserts +item+ into queue +self+ at index +index+, all items after the index
@@ -226,6 +237,7 @@ assert(str_cmp(deq_index(queue, 1), str3) == 0);
 assert(str_cmp(deq_index(queue, 2), str2) == 0);
 ----
 
+[[deq_pop_front]]
 +void* deq_pop_front(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pops an item off of the front of the queue +self+.
@@ -248,6 +260,7 @@ assert(str_cmp(deq_pop_front(queue), str1) == 0);
 assert(str_cmp(deq_pop_front(queue), str2) == 0);
 ----
 
+[[deq_pop_back]]
 +void* deq_pop_back(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Pops an item off of the back of the queue +self+.
@@ -270,6 +283,7 @@ assert(str_cmp(deq_pop_back(queue), str2) == 0);
 assert(str_cmp(deq_pop_back(queue), str1) == 0);
 ----
 
+[[deq_index]]
 +void* deq_index(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the element at position +index+ of +self+.
@@ -293,6 +307,7 @@ deq_push_back(queue, str_dup(str3));
 assert(str_cmp(deq_index(queue, 1), str2) == 0);
 ----
 
+[[deq_front]]
 +void* deq_front(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the element at the front of the queue +self+.
@@ -314,6 +329,7 @@ deq_push_back(queue, str_dup(str2));
 assert(strcmp(deq_front(queue), str1) == 0);
 ----
 
+[[deq_back]]
 +void* deq_back(deq *self)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the element at the back of the queue +self+.
@@ -335,6 +351,7 @@ deq_push_back(queue, str_dup(str2));
 assert(strcmp(deq_back(queue), str2) == 0);
 ----
 
+[[deq_swap]]
 +void deq_swap(deq *self, int i, int j)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Swaps elements at positions +i+ and +j+, does nothing if +i+ or +j+ are out of
@@ -360,10 +377,11 @@ assert(str_cmp(deq_front(queue), str2) == 0);
 assert(str_cmp(deq_back(queue), str1) == 0);
 ----
 
+[[deq_swap_rm_front]]
 +void* deq_swap_rm_front(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Swaps front element with item at +index+, and pops item now at front.
-Does not keep order of elements, but faster that +deq_remove()+.
+Does not keep order of elements, but faster that <<deq_remove,+deq_remove()+>>.
 
 Examples
 ^^^^^^^^
@@ -386,11 +404,12 @@ assert(str_cmp(deq_front(queue, str2) == 0);
 assert(deq_size == 2);
 ----
 
+[[deq_swap_rm_back]]
 +void* deq_swap_rm_back(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Swaps back element with item at +index+, and pops item now at back.
 Will return same element as +deq_remove(self, index)+.
-Does not keep order of elements, but faster that +deq_remove()+.
+Does not keep order of elements, but faster that <<deq_remove,+deq_remove()+>>.
 
 Examples
 ^^^^^^^^
@@ -413,6 +432,7 @@ assert(str_cmp(deq_back(queue, str2) == 0);
 assert(deq_size == 2);
 ----
 
+[[deq_truncate]]
 +void deq_truncate(deq *self, int size)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Truncates queue +self+ to +size+ elements, elements in positions > +size+ will
@@ -440,6 +460,7 @@ deq_truncate(queue, 1);
 assert(deq_size == 1);
 ----
 
+[[deq_reserve]]
 +void deq_reserve(deq *self, int additional)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Reserves space for +additional+ items. May reserve more memory to avoid too
@@ -457,6 +478,7 @@ deq_reserve(queue, 20);
 assert(deq_capacity(queue) >= 20);
 ----
 
+[[deq_remove]]
 +void deq_remove(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Element at position +index+ of +self+ is removed from queue and the remaining
@@ -485,6 +507,7 @@ assert(strcmp(deq_front(queue), str1) == 0);
 assert(strcmp(deq_back(queue), str3) == 0);
 ----
 
+[[deq_print]]
 +void deq_print(deq *self, (char* to_string(void*)))+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Prints out the contents of the queue +self+ to +stdout+ (surounded by square brackets and separated by commas ','). +to_string+ is a

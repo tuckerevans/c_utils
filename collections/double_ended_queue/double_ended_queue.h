@@ -1,5 +1,5 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef DOUBLE_ENDED_QUEUE_H
+#define DOUBLE_ENDED_QUEUE_H
 
 typedef struct double_ended_queue deq;
 
