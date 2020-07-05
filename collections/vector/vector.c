@@ -108,10 +108,13 @@ vec *root;
 char* to_string(void*);
 {
 	int i;
+	char *tmp;
 
 	printf("[");
 	for(i = 0; i < root->end; i++) {
-		printf("%s", to_string(vec_index(root, i)));
+		printf("%s", tmp = to_string(vec_index(root, i)));
+		free(tmp);
+		tmp = NULL;
 	}
 	printf("\b]\n");
 
