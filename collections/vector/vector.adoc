@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.14, 2020-07-03
+v0.15, 2020-07-04
 
 A basic vector, that hold pointers to your data structures.
 
@@ -365,6 +365,36 @@ vec_push(vector, str_dup(str3));
 assert(str_cmp(vec_swap_pop(vector, 2), str3) == 0);
 assert(str_cmp(vec_back(vector, str2) == 0);
 assert(vec_size == 2);
+----
+
+[[vec_truncate]]
++void vec_truncate(vec *self, int size)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Truncates vector +self+ to +size+ elements, elements in positions > +size+ will
+no longer be accessable through +self+. Does nothing if +size+ > current number
+of elements.
+
+NOTE: Does not currently reduce memory footprint
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+char *str3 = "THREE";
+
+vec *vector = vec_new();
+vec_push(vector, str_dup(str1));
+vec_push(vector, str_dup(str2));
+vec_push(vector, str_dup(str3));
+
+vec_truncate(vector, 1);
+
+assert(vec_size == 1);
 ----
 
 [[vec_clear]]

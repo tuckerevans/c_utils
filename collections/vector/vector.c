@@ -237,6 +237,16 @@ int i;
 	return vec_pop(root);
 }
 
+void vec_truncate(root, size)
+vec *root;
+int size;
+{
+	if (!root || size < 0 || size >= root->end)
+		return;
+
+	root->end = size;
+}
+
 void vec_clear(root)
 vec *root;
 {
