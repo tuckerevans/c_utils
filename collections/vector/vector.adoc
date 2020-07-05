@@ -1,7 +1,7 @@
 Vector
 ======
 Tucker Evans
-v0.16, 2020-07-04
+v0.17, 2020-07-04
 
 A basic vector, that hold pointers to your data structures.
 
@@ -398,6 +398,24 @@ vec_push(vector, str_dup(str3));
 vec_truncate(vector, 1);
 
 assert(vec_size == 1);
+----
+
+[[vec_reserve]]
++void vec_reserve(vec *self, int additional)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reserves space for +additional+ items. May reserve more memory to avoid too
+many reallocations.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "vector.h"
+
+vec *vector = vec_with_capacity(16);
+
+vec_reserve(vector, 20);
+assert(vec_capacity(vector) >= 20);
 ----
 
 [[vec_clear]]

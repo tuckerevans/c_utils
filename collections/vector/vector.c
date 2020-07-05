@@ -250,6 +250,20 @@ int size;
 	root->end = size;
 }
 
+void vec_reserve(root, n)
+vec *root;
+int n;
+{
+	int i;
+
+	if (!root || n + root->end <= root->limit)
+		return;
+
+	for (i = root->limit; i < root->end + n; i*=2);
+
+	root->base = reallocarray(root->base, i, sizeof(void*));
+}
+
 void vec_clear(root)
 vec *root;
 {

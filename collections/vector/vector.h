@@ -30,6 +30,7 @@ void* vec_swap_pop(vec*, int);
 
 /*memory*/
 void vec_truncate(vec*, int);
+void vec_reserve(vec*, int);
 
 void vec_clear(vec*);
 void vec_free(vec*);
