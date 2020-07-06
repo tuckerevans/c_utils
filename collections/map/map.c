@@ -45,6 +45,43 @@ map *root;
 	return map_size(root->left) + map_size(root->right) + 1;
 }
 
+int map_insert(root, key, val)
+map *root;
+void *key, *val;
+{
+	int cmp;
+
+	if (!root)
+		return -1;
+
+	if (!key) {
+		root->key = key;
+		root->val = val;
+		return 0;
+	}
+
+	cmp = root->cmp(root->key, key);
+
+	if (cmp == 0 && root->key == key) {
+		root->val = val;
+	} else if (cmp < 0) {
+
+		if (!root->left)
+			root->left = map_new_from_parent(root);
+
+		map_insert(root->left, key, val);
+	} else if (cmp > 0) {
+		if (!root->right)
+			root->right = map_new_from_parent(root);
+
+		map_insert(root->right, key, val);
+	} else {
+		return -1;
+	}
+
+	return 0;
+}
+
 void map_clear(root)
 map *root;
 {

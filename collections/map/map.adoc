@@ -1,7 +1,7 @@
 Map
 ===
 Tucker Evans
-v0.2, 2020-07-06
+v0.3, 2020-07-06
 
 A basic map implemented in an AVL tree.
 
@@ -66,6 +66,28 @@ Examples
 map *dict = map_new((cmp_func) strcmp);
 
 assert(map_size(dict) == 0);
+map_insert(dict, "ONE", NULL);
+assert(map_size(dict) == 1);
+----
+
+[[map_insert]]
++int map_insert(map *self, void *key, void *value)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inserts item +value+ for +key+ into +self+
+This returns an int indicating a successful insertion; currently the only
+two potential errors are caused by a NULL map or an equivalent key with a
+different pointer, this is in order to prevent a memory leak.
+<<reset_key,+map_reset_key()+>> can be used to fix this issue.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp);
+
 map_insert(dict, "ONE", NULL);
 assert(map_size(dict) == 1);
 ----
