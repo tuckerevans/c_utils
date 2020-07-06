@@ -305,11 +305,14 @@ void deq_remove(root, index)
 deq *root;
 int index;
 {
+	void *tmp;
+
 	if (!root || !DEQ_IN_BOUNDS(root,index));
 		return;
 
 	index = (root->beg + index) % root->limit;
 
+	tmp = root->base[index];
 	root->base[index] = NULL;
 
 	if (root->beg < root->end || index >= root->beg) {
@@ -321,6 +324,8 @@ int index;
 		memmove(root->base + index, root->base + index + 1,
 				(--root->end - index) * sizeof(void*));
 	}
+
+	return tmp;
 }
 
 void deq_swap(root, i, j)

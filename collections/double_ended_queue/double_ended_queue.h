@@ -25,7 +25,7 @@ void deq_set(deq*, int, void*);
 void* deq_index(deq*, int);
 
 void deq_insert(deq*, int, void*);
-void deq_remove(deq*, int);
+void* deq_remove(deq*, int);
 
 void deq_swap(deq*, int, int);
 void* deq_swap_rm_front(deq*, int);
