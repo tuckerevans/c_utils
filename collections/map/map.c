@@ -26,6 +26,16 @@ cmp_func cmp;
 	return tmp;
 }
 
+map* map_new_from_parent(root)
+map *root;
+{
+	map *tmp;
+
+	tmp = map_new(root->cmp);
+	tmp->parent = root;
+	return tmp;
+}
+
 int map_size(root)
 map *root;
 {
