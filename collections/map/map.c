@@ -34,3 +34,47 @@ map *root;
 
 	return map_size(root->left) + map_size(root->right) + 1;
 }
+
+void map_clear(root)
+map *root;
+{
+	map *l, *r;
+
+	l = root->left;
+	r = root->right;
+
+	if (!root)
+		return;
+
+	if (root->parent) {
+		free(root->key);
+		root->key = NULL;
+
+		free(root->val);
+		root->val = NULL;
+
+		root->parent = NULL;
+
+		free(root);
+	}
+
+	map_clear(l);
+	map_clear(r);
+}
+
+void map_free(root)
+map *root;
+{
+	if (!root)
+		return;
+
+	root->key = NULL;
+
+	map_free(root->left);
+	root->left = NULL;
+
+	map_free(root->right);
+	root->right = NULL;
+
+	free(root);
+}

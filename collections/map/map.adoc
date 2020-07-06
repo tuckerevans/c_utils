@@ -66,6 +66,52 @@ Examples
 map *dict = map_new((cmp_func) strcmp);
 
 assert(map_size(dict) == 0);
-map_set(dict, "ONE", NULL);
+map_insert(dict, "ONE", NULL);
 assert(map_size(dict) == 1);
+----
+
+[[map_clear]]
++void map_clear(map *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Free all elements within dict +self+, and sets dict to empty (size 0).
+
+NOTE: Does not free all internal memory of +self+ or +self+ itself, if this is
+desired <<map_free,+map_free()+>> should be called immediatly after this.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+map *dict = map_new();
+map_insert(dict, str_dup(str1), NULL);
+map_insert(dict, str_dup(str2), NULL);
+
+map_clear(dict);
+assert(map_size(dict) == 0);
+map_free(dict);
+----
+
+[[map_free]]
++void map_free(map *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Frees all internal memory and +self+.
+
+NOTE: All item pointers are still valid after a call to
+<<map_free,+map_free()+>>, <<map_clear,+map_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+
+map *dict = map_new();
+map_free(dict);
 ----
