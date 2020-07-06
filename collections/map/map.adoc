@@ -1,0 +1,32 @@
+Map
+===
+Tucker Evans
+v0.0, 2020-07-06
+
+A basic map implemented in an AVL tree.
+
+NOTE: Keys are passed as void pointers and their data is not copied (this
+should be handled by the user), they should not be freed without clearing the
+map.
+
+NOTE: There is currently no way to distinquish between a failed retrieval
+(pop, index, back, etc.) and returning a NULL value. Keep this in mind if
+you plan on storing NULL values in the vector, there are plans to fix this in
+the future.
+
+Types
+----
+The following types are defined in the header file:
+[[map]]
++map+
+~~~~~
+This structure holds all internal information regarding a map.
+All functions (except constructors) expect a pointer to this struct as their
+first parameter.
+
+[[cmp_func]]
++cmp_func+
+~~~~~~~~~~~
+This is a pointer to a function that to compare keys from pointers. This
+typedef is provided to cast comparison functions as a map expects the
+comparison function to take void* as its parameters.
