@@ -1,7 +1,7 @@
 Double Ended Queue
 ==================
 Tucker Evans
-v1.0.1, 2020-06-10
+v1.0.2, 2020-07-06
 
 A double ended queue implemented in a circular buffer.
 
@@ -514,6 +514,9 @@ Prints out the contents of the queue +self+ to +stdout+ (surounded by square bra
 function that takes a pointer to the type of elements stored in +self+ and
 returns a string representation.
 
+NOTE: Strings are freed after printing, therefore +strdup()+ should be used on
+any strings that are not for the sole purpose of printing here.
+
 Examples
 ^^^^^^^^
 [source,c]
@@ -524,7 +527,7 @@ Examples
 char* to_string(str)
 void *str;
 {
-	return str;
+	return strdup(str);
 }
 
 int main()

@@ -147,12 +147,15 @@ deq *root;
 char* to_string(void*);
 {
 	int i, size;;
+	char *tmp;
 
 	size = deq_size(root);
 
 	printf("[");
 	for (i = 0; i < size; i++) {
-		printf("%s,", to_string(deq_index(root, i)));
+		printf("%s,", tmp = to_string(deq_index(root, i)));
+		free(tmp);
+		tmp = NULL;
 	}
 	printf("\b]\n");
 }
