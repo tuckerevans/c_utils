@@ -25,3 +25,12 @@ cmp_func cmp;
 
 	return tmp;
 }
+
+int map_size(root)
+map *root;
+{
+	if (!root || !root->key)
+		return 0;
+
+	return map_size(root->left) + map_size(root->right) + 1;
+}

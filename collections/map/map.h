@@ -7,4 +7,7 @@ typedef int (*cmp_func)(void*, void*);
 /*constructors*/
 map* map_new(cmp_func);
 
+/*management*/
+int map_size(map*);
+
 #endif

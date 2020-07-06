@@ -1,7 +1,7 @@
 Map
 ===
 Tucker Evans
-v0.1, 2020-07-06
+v0.2, 2020-07-06
 
 A basic map implemented in an AVL tree.
 
@@ -49,4 +49,23 @@ Examples
 #include <string.h>
 
 map *dict = map_new((cmp_func) strcmp);
+----
+
+[[map_size]]
++map_size(map *self)+
+~~~~~~~~~~~~~~~~~~~~~
+Returns the number of key, value pairs stored in map +self+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp);
+
+assert(map_size(dict) == 0);
+map_set(dict, "ONE", NULL);
+assert(map_size(dict) == 1);
 ----
