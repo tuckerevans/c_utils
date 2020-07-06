@@ -4,4 +4,7 @@
 typedef struct map_node map;
 typedef int (*cmp_func)(void*, void*);
 
+/*constructors*/
+map* map_new(cmp_func);
+
 #endif

@@ -1,7 +1,7 @@
 Map
 ===
 Tucker Evans
-v0.0, 2020-07-06
+v0.1, 2020-07-06
 
 A basic map implemented in an AVL tree.
 
@@ -30,3 +30,23 @@ first parameter.
 This is a pointer to a function that to compare keys from pointers. This
 typedef is provided to cast comparison functions as a map expects the
 comparison function to take void* as its parameters.
+
+Functions
+---------
+[[map_new]]
++map_new(cmp_func cmp)+
+~~~~~~~~~~~~~~~~~~~~~~~
+Constructs an empty map.
++cmp+ should be a function that takes two pointers (+lhs+, +rhs+)to your value
+type and returns (int) a negative value if +lhs+ is less than  +rhs+, zero if
++lhs+ is equal to +rhs+, and positive value if +lhs+ is greater than +rhs+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp);
+----
