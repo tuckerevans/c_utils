@@ -28,6 +28,19 @@ struct double_ended_queue {
 	int beg, end, limit;
 };
 
+void deq_debug_print(root)
+deq *root;
+{
+	void **tmp;
+
+	fprintf(stderr, "DEQ[base: %p, beg: %d, end:%d]:\n\t ",
+			root->base, root->beg, root->end);
+	for (tmp = root->base; tmp < root->base + root->limit; tmp++){
+		fprintf(stderr, "[%p]", *tmp);
+	}
+	fprintf(stderr, "\n");
+}
+
 deq* deq_new()
 {
 	deq *root;
@@ -111,16 +124,37 @@ deq *root;
 	root->base = tmp;
 }
 
-void* deq_index(root, index)
+deq* deq_cp(root)
 deq *root;
-int index;
 {
-	void **tmp;
+	deq *copy;
 
-	if (!root || !DEQ_IN_BOUNDS(root,index))
-		return NULL;
+	copy = deq_with_capacity(root->limit);
+	assert(copy->base);
 
-	return root->base[(root->beg + index) % root->limit];
+	copy->base = memcpy(copy->base, root->base,
+			root->limit * sizeof(void*));
+	assert(copy->base);
+
+	copy->beg = root->beg;
+	copy->end = root->end;
+
+	return copy;
+}
+
+void deq_print(root, to_string)
+deq *root;
+char* to_string(void*);
+{
+	int i, size;;
+
+	size = deq_size(root);
+
+	printf("[");
+	for (i = 0; i < size; i++) {
+		printf("%s,", to_string(deq_index(root, i)));
+	}
+	printf("\b]\n");
 }
 
 void deq_push_front(root, item)
@@ -163,6 +197,50 @@ void *item;
 		root->end = root->limit;
 }
 
+void* deq_front(root)
+deq *root;
+{
+	if (!root)
+		return NULL;
+
+	return root->base[root->beg];
+}
+
+void* deq_back(root)
+deq *root;
+{
+	if (!root)
+		return NULL;
+
+	return root->base[(root->end - 1) % root->limit];
+}
+void* deq_pop_front(root)
+deq *root;
+{
+	void* tmp;
+	if (!root || root->beg == root->end)
+		return NULL;
+
+	tmp = root->base[root->beg];
+
+	++root->beg;
+	root->beg %= root->limit;
+
+	return tmp;
+}
+
+void* deq_pop_back(root)
+deq *root;
+{
+	if (!root || root->end == root->beg)
+		return NULL;
+
+	--root->end;
+	root->end %= root->limit;
+
+	return root->base[root->end];
+}
+
 void deq_set(root, index, item)
 deq *root;
 int index;
@@ -171,6 +249,18 @@ void *item;
 	if (!root || !DEQ_IN_BOUNDS(root, index))
 		return;
 	root->base[(root->beg + index) % root->limit] = item;
+}
+
+void* deq_index(root, index)
+deq *root;
+int index;
+{
+	void **tmp;
+
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
+
+	return root->base[(root->beg + index) % root->limit];
 }
 
 void deq_insert(root, index, item)
@@ -211,53 +301,26 @@ void *item;
 	root->base[index] = item;
 }
 
-void* deq_pop_front(root)
-deq *root;
-{
-	void* tmp;
-	if (!root || root->beg == root->end)
-		return NULL;
-
-	tmp = root->base[root->beg];
-
-	++root->beg;
-	root->beg %= root->limit;
-
-	return tmp;
-}
-
-void* deq_pop_back(root)
-deq *root;
-{
-	if (!root || root->end == root->beg)
-		return NULL;
-
-	--root->end;
-	root->end %= root->limit;
-
-	return root->base[root->end];
-}
-
-void* deq_swap_rm_front(root, index)
+void deq_remove(root, index)
 deq *root;
 int index;
 {
-	if (!root || !DEQ_IN_BOUNDS(root,index))
-		return NULL;
+	if (!root || !DEQ_IN_BOUNDS(root,index));
+		return;
 
-	deq_swap(root, 0, index);
-	return deq_pop_front(root);
-}
+	index = (root->beg + index) % root->limit;
 
-void* deq_swap_rm_back(root, index)
-deq *root;
-int index;
-{
-	if (!root || !DEQ_IN_BOUNDS(root,index))
-		return NULL;
+	root->base[index] = NULL;
 
-	deq_swap(root,deq_size(root) - 1,index);
-	return deq_pop_back(root);
+	if (root->beg < root->end || index >= root->beg) {
+		memmove(root->base + root->beg + 1,
+				root->base + root->beg,
+				(index - root->beg) * sizeof(void*));
+		++root->beg;
+	} else {
+		memmove(root->base + index, root->base + index + 1,
+				(--root->end - index) * sizeof(void*));
+	}
 }
 
 void deq_swap(root, i, j)
@@ -286,98 +349,28 @@ int i, j;
 	root->base[j] = tmp;
 }
 
-void deq_remove(root, index)
+void* deq_swap_rm_front(root, index)
 deq *root;
 int index;
 {
-	if (!root || !DEQ_IN_BOUNDS(root,index));
-		return;
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
 
-	index = (root->beg + index) % root->limit;
-
-	root->base[index] = NULL;
-
-	if (root->beg < root->end || index >= root->beg) {
-		memmove(root->base + root->beg + 1,
-				root->base + root->beg,
-				(index - root->beg) * sizeof(void*));
-		++root->beg;
-	} else {
-		memmove(root->base + index, root->base + index + 1,
-				(--root->end - index) * sizeof(void*));
-	}
+	deq_swap(root, 0, index);
+	return deq_pop_front(root);
 }
 
-/* Note: Elements are not freed
- * deq_clear should be called before if they are no longer needed.
- */
-void deq_free(root)
+void* deq_swap_rm_back(root, index)
 deq *root;
+int index;
 {
-	free(root->base);
-	root->base = NULL;
+	if (!root || !DEQ_IN_BOUNDS(root,index))
+		return NULL;
 
-	free(root);
+	deq_swap(root,deq_size(root) - 1,index);
+	return deq_pop_back(root);
 }
 
-void deq_clear(root)
-deq *root;
-{
-	int i, size;
-
-	size = deq_size(root);
-	for (i = 0; i < size; i++) {
-		free(deq_index(root, i));
-	}
-}
-
-void deq_print(root, to_string)
-deq *root;
-char* to_string(void*);
-{
-	int i, size;;
-
-	size = deq_size(root);
-
-	printf("[");
-	for (i = 0; i < size; i++) {
-		printf("%s,", to_string(deq_index(root, i)));
-	}
-	printf("\b]\n");
-}
-
-void deq_debug_print(root)
-deq *root;
-{
-	void **tmp;
-
-	fprintf(stderr, "DEQ[base: %p, beg: %d, end:%d]:\n\t ",
-			root->base, root->beg, root->end);
-	for (tmp = root->base; tmp < root->base + root->limit; tmp++){
-		fprintf(stderr, "[%p]", *tmp);
-	}
-	fprintf(stderr, "\n");
-}
-
-deq* deq_cp(root)
-deq *root;
-{
-	deq *copy;
-
-	copy = deq_with_capacity(root->limit);
-	assert(copy->base);
-
-	copy->base = memcpy(copy->base, root->base,
-			root->limit * sizeof(void*));
-	assert(copy->base);
-
-	copy->beg = root->beg;
-	copy->end = root->end;
-
-	return copy;
-}
-
-/*Note: Does not currently reduce memory footprint*/
 void deq_truncate(root, size)
 deq *root;
 int size;
@@ -386,24 +379,6 @@ int size;
 		return;
 
 	root->end = (root->beg + size) % root->limit;
-}
-
-void* deq_front(root)
-deq *root;
-{
-	if (!root)
-		return NULL;
-
-	return root->base[root->beg];
-}
-
-void* deq_back(root)
-deq *root;
-{
-	if (!root)
-		return NULL;
-
-	return root->base[(root->end - 1) % root->limit];
 }
 
 void deq_reserve(root, size)
@@ -438,4 +413,24 @@ int size;
 
 	free(root->base);
 	root->base = tmp;
+}
+
+void deq_clear(root)
+deq *root;
+{
+	int i, size;
+
+	size = deq_size(root);
+	for (i = 0; i < size; i++) {
+		free(deq_index(root, i));
+	}
+}
+
+void deq_free(root)
+deq *root;
+{
+	free(root->base);
+	root->base = NULL;
+
+	free(root);
 }
