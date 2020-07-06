@@ -1,7 +1,7 @@
 Double Ended Queue
 ==================
 Tucker Evans
-v1.0.1, 2020-06-10
+v1.0.2, 2020-07-06
 
 A double ended queue implemented in a circular buffer.
 
@@ -107,32 +107,15 @@ assert(strcmp(deq_pop_back, str2) == 0);
 assert(strcmp(deq_pop_back, str1) == 0);
 ----
 
-[[deq_free]]
-+void deq_free(deq *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-Frees all internal memory and +self+.
+[[deq_print]]
++void deq_print(deq *self, (char* to_string(void*)))+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Prints out the contents of the queue +self+ to +stdout+ (surounded by square brackets and separated by commas ','). +to_string+ is a
+function that takes a pointer to the type of elements stored in +self+ and
+returns a string representation.
 
-NOTE: All item pointers are still valid after a call to
-<<deq_free,+deq_free()+>>, <<deq_clear,+deq_clear()+>> should be called before
-if they are no longer needed to avoid memory leaks.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "double_ended_queue.h"
-
-deq *queue = deq_new();
-deq_free(queue);
-----
-
-[[deq_clear]]
-+void deq_clear(deq *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Free all elements within queue +self+, and sets queue to empty (size 0).
-
-NOTE: Does not free internal memory of +self+ or +self+ itself, if this is
-desired <<deq_free,+deq_free()+>> should be called immediately after this.
+NOTE: Strings are freed after printing, therefore +strdup()+ should be used on
+any strings that are not for the sole purpose of printing here.
 
 Examples
 ^^^^^^^^
@@ -141,16 +124,32 @@ Examples
 #include "double_ended_queue.h"
 #include <string.h>
 
+char* to_string(str)
+void *str;
+{
+	return strdup(str);
+}
+
+int main()
+{
 char *str1 = "ONE";
 char *str2 = "TWO";
+char *str3 = "THREE";
 
 deq *queue = deq_new();
 deq_push_back(queue, str_dup(str1));
 deq_push_back(queue, str_dup(str2));
+deq_push_back(queue, str_dup(str3));
 
-deq_clear(queue);
-assert(deq_size(queue) == 0);
-deq_free(queue);
+printf("DEQ CONTENTS:\n\t")
+deq_print(queue, to_string)
+}
+----
+
+Output:
+----
+DEQ_CONTENTS:
+	[ONE,TWO,THREE]
 ----
 
 [[deq_push_front]]
@@ -185,10 +184,10 @@ deq_push_back(queue, NULL);
 assert(deq_size(queue) == 1);
 ----
 
-[[deq_set]]
-+void deq_set(deq *self, int index, void *item)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Sets the element at position +index+ in +self+ to +item+.
+[[deq_front]]
++void* deq_front(deq *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the element at the front of the queue +self+.
 
 Examples
 ^^^^^^^^
@@ -204,17 +203,13 @@ deq *queue = deq_new();
 deq_push_back(queue, str_dup(str1));
 deq_push_back(queue, str_dup(str2));
 
-deq_set(queue, 0, str2);
-
-assert(str_cmp(deq_pop_back(queue), str2) == 0);
-assert(str_cmp(deq_pop_back(queue), str2) == 0);
+assert(strcmp(deq_front(queue), str1) == 0);
 ----
 
-[[deq_insert]]
-+void deq_insert(deq *self, int index, void *item)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Inserts +item+ into queue +self+ at index +index+, all items after the index
-are pushed toward the end.
+[[deq_back]]
++void* deq_back(deq *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the element at the back of the queue +self+.
 
 Examples
 ^^^^^^^^
@@ -225,16 +220,12 @@ Examples
 
 char *str1 = "ONE";
 char *str2 = "TWO";
-char *str3 = "THREE";
 
 deq *queue = deq_new();
 deq_push_back(queue, str_dup(str1));
 deq_push_back(queue, str_dup(str2));
 
-deq_insert(queue, 1, str_dup(str3));
-
-assert(str_cmp(deq_index(queue, 1), str3) == 0);
-assert(str_cmp(deq_index(queue, 2), str2) == 0);
+assert(strcmp(deq_back(queue), str2) == 0);
 ----
 
 [[deq_pop_front]]
@@ -283,6 +274,31 @@ assert(str_cmp(deq_pop_back(queue), str2) == 0);
 assert(str_cmp(deq_pop_back(queue), str1) == 0);
 ----
 
+[[deq_set]]
++void deq_set(deq *self, int index, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sets the element at position +index+ in +self+ to +item+.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "double_ended_queue.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+
+deq *queue = deq_new();
+deq_push_back(queue, str_dup(str1));
+deq_push_back(queue, str_dup(str2));
+
+deq_set(queue, 0, str2);
+
+assert(str_cmp(deq_pop_back(queue), str2) == 0);
+assert(str_cmp(deq_pop_back(queue), str2) == 0);
+----
+
 [[deq_index]]
 +void* deq_index(deq *self, int index)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -307,10 +323,11 @@ deq_push_back(queue, str_dup(str3));
 assert(str_cmp(deq_index(queue, 1), str2) == 0);
 ----
 
-[[deq_front]]
-+void* deq_front(deq *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Returns the element at the front of the queue +self+.
+[[deq_insert]]
++void deq_insert(deq *self, int index, void *item)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Inserts +item+ into queue +self+ at index +index+, all items after the index
+are pushed toward the end.
 
 Examples
 ^^^^^^^^
@@ -321,34 +338,45 @@ Examples
 
 char *str1 = "ONE";
 char *str2 = "TWO";
+char *str3 = "THREE";
 
 deq *queue = deq_new();
 deq_push_back(queue, str_dup(str1));
 deq_push_back(queue, str_dup(str2));
 
+deq_insert(queue, 1, str_dup(str3));
+
+assert(str_cmp(deq_index(queue, 1), str3) == 0);
+assert(str_cmp(deq_index(queue, 2), str2) == 0);
+----
+
+[[deq_remove]]
++void deq_remove(deq *self, int index)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Element at position +index+ of +self+ is removed from queue and the remaining
+items are shifted towards the front.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "double_ended_queue.h"
+#include <string.h>
+
+char *str1 = "ONE";
+char *str2 = "TWO";
+char *str3 = "THREE";
+
+deq *queue = deq_new();
+deq_push_back(queue, str_dup(str1));
+deq_push_back(queue, str_dup(str2));
+deq_push_back(queue, str_dup(str3));
+
+deq_remove(queue, 1);
+
+assert(deq_size == 2);
 assert(strcmp(deq_front(queue), str1) == 0);
-----
-
-[[deq_back]]
-+void* deq_back(deq *self)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Returns the element at the back of the queue +self+.
-
-Examples
-^^^^^^^^
-[source,c]
-----
-#include "double_ended_queue.h"
-#include <string.h>
-
-char *str1 = "ONE";
-char *str2 = "TWO";
-
-deq *queue = deq_new();
-deq_push_back(queue, str_dup(str1));
-deq_push_back(queue, str_dup(str2));
-
-assert(strcmp(deq_back(queue), str2) == 0);
+assert(strcmp(deq_back(queue), str3) == 0);
 ----
 
 [[deq_swap]]
@@ -478,11 +506,13 @@ deq_reserve(queue, 20);
 assert(deq_capacity(queue) >= 20);
 ----
 
-[[deq_remove]]
-+void deq_remove(deq *self, int index)+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Element at position +index+ of +self+ is removed from queue and the remaining
-items are shifted towards the front.
+[[deq_clear]]
++void deq_clear(deq *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Free all elements within queue +self+, and sets queue to empty (size 0).
+
+NOTE: Does not free internal memory of +self+ or +self+ itself, if this is
+desired <<deq_free,+deq_free()+>> should be called immediately after this.
 
 Examples
 ^^^^^^^^
@@ -493,58 +523,31 @@ Examples
 
 char *str1 = "ONE";
 char *str2 = "TWO";
-char *str3 = "THREE";
 
 deq *queue = deq_new();
 deq_push_back(queue, str_dup(str1));
 deq_push_back(queue, str_dup(str2));
-deq_push_back(queue, str_dup(str3));
 
-deq_remove(queue, 1);
-
-assert(deq_size == 2);
-assert(strcmp(deq_front(queue), str1) == 0);
-assert(strcmp(deq_back(queue), str3) == 0);
+deq_clear(queue);
+assert(deq_size(queue) == 0);
+deq_free(queue);
 ----
 
-[[deq_print]]
-+void deq_print(deq *self, (char* to_string(void*)))+
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Prints out the contents of the queue +self+ to +stdout+ (surounded by square brackets and separated by commas ','). +to_string+ is a
-function that takes a pointer to the type of elements stored in +self+ and
-returns a string representation.
+[[deq_free]]
++void deq_free(deq *self)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Frees all internal memory and +self+.
+
+NOTE: All item pointers are still valid after a call to
+<<deq_free,+deq_free()+>>, <<deq_clear,+deq_clear()+>> should be called before
+if they are no longer needed to avoid memory leaks.
 
 Examples
 ^^^^^^^^
 [source,c]
 ----
 #include "double_ended_queue.h"
-#include <string.h>
-
-char* to_string(str)
-void *str;
-{
-	return str;
-}
-
-int main()
-{
-char *str1 = "ONE";
-char *str2 = "TWO";
-char *str3 = "THREE";
 
 deq *queue = deq_new();
-deq_push_back(queue, str_dup(str1));
-deq_push_back(queue, str_dup(str2));
-deq_push_back(queue, str_dup(str3));
-
-printf("DEQ CONTENTS:\n\t")
-deq_print(queue, to_string)
-}
-----
-
-Output:
-----
-DEQ_CONTENTS:
-	[ONE,TWO,THREE]
+deq_free(queue);
 ----
