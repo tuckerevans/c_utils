@@ -54,7 +54,7 @@ void *key, *val;
 	if (!root)
 		return -1;
 
-	if (!key) {
+	if (!root->key) {
 		root->key = key;
 		root->val = val;
 		return 0;
@@ -110,7 +110,7 @@ map *root;
 void *key;
 {
 	int cmp;
-	if (!root || !key)
+	if (!root || !root->key)
 		return NULL;
 
 	cmp = root->cmp(root->key, key);
