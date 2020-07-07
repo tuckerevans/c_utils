@@ -105,6 +105,25 @@ void *key;
 	return tmp;
 }
 
+void* map_index(root, key)
+map *root;
+void *key;
+{
+	int cmp;
+	if (!root || !key)
+		return NULL;
+
+	cmp = root->cmp(root->key, key);
+
+	if (cmp < 0)
+		return map_index(root->left, key);
+
+	if (cmp > 0)
+		return map_index(root->right, key);
+
+	return root->val;
+}
+
 void map_clear(root)
 map *root;
 {

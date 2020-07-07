@@ -1,7 +1,7 @@
 Map
 ===
 Tucker Evans
-v0.4, 2020-07-06
+v0.5, 2020-07-06
 
 A basic map implemented in an AVL tree.
 
@@ -111,6 +111,24 @@ map_insert(dict, strdup("ONE"), "VALUE");
 assert(map_insert(dict, "ONE", "NEW_VALUE") < 0);
 free(map_reset_key(dict "ONE"));
 assert(map_insert(dict, "ONE", "NEW_VALUE") == 0);
+----
+
+[[map_index]]
++void* map_index(map *self, vaid *key)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Returns the value associated with +key+ (or equivalent).
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp, sizeof(char*));
+
+map_insert(dict, strdup("ONE"), "VALUE");
+assert(strcmp(map_index(dict, "ONE"), "VALUE") == 0);
 ----
 
 [[map_clear]]
