@@ -26,6 +26,12 @@ map *root;
 	return 1 + ( l > r ? l : r);
 }
 
+int map_bal_factor(root)
+map *root;
+{
+	return map_height(root->right) - map_height(root->left);
+}
+
 map* map_new(cmp)
 cmp_func cmp;
 {
