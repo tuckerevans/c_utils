@@ -12,6 +12,20 @@ struct map_node {
 	struct map_node *left, *right, *parent;
 };
 
+int map_height(root)
+map *root;
+{
+	int l, r;
+
+	if (!root || !root->key)
+		return 0;
+
+	l = map_height(root->left);
+	r = map_height(root->right);
+
+	return 1 + ( l > r ? l : r);
+}
+
 map* map_new(cmp)
 cmp_func cmp;
 {
