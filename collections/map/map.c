@@ -82,6 +82,29 @@ void *key, *val;
 	return 0;
 }
 
+void* map_reset_key(root, key)
+map *root;
+void *key;
+{
+	void *tmp;
+	int cmp;
+
+	if (!root || !key)
+		return NULL;
+
+	cmp = root->cmp(root->key, key);
+
+	if (cmp < 0)
+		return map_reset_key(root->left, key);
+
+	if (cmp > 0)
+		return map_reset_key(root->right, key);
+
+	tmp = root->key;
+	root->key = key;
+	return tmp;
+}
+
 void map_clear(root)
 map *root;
 {
