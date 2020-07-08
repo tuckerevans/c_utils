@@ -1,7 +1,7 @@
 Map
 ===
 Tucker Evans
-v0.5, 2020-07-06
+v0.6, 2020-07-06
 
 A basic map implemented in an AVL tree.
 
@@ -96,6 +96,25 @@ else
 	assert(map_size(dict) == 1);
 ----
 
+[[map_set_val]]
++void* map_set_val(map *self, void *key, void *val)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This replaces the value stored at +key+ (or equivalent) with +val+, the value
+that is overwritten is return so the user can free it.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp);
+
+map_insert(dict, strdup("ONE"), strdup("VALUE"));
+free(map_set_val(dict, "ONE", "NEW_VALUE"));
+----
+
 [[map_check_key_ptr]]
 +int map_check_key_ptr(map *self, void *key)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,7 +141,6 @@ eq_key2 = strdup("ONE");
 if (!map_check_key_ptr(dict, eq_key2)) {
 	free(map_set_key(dict, eq_key2));
 }
-
 ----
 
 [[map_set_key]]
@@ -140,10 +158,14 @@ Examples
 
 map *dict = map_new((cmp_func) strcmp);
 
-map_insert(dict, strdup("ONE"), "VALUE");
-assert(map_insert(dict, "ONE", "NEW_VALUE") < 0);
-free(map_set_key(dict "ONE"));
-assert(map_insert(dict, "ONE", "NEW_VALUE") == 0);
+map_insert(dict, strdup("ONE"), NULL);
+
+eq_key2 = strdup("ONE");
+
+/*Want to free key1 for some reason*/
+if (!map_check_key_ptr(dict, eq_key2)) {
+	free(map_set_key(dict, eq_key2));
+}
 ----
 
 [[map_index]]
