@@ -102,7 +102,7 @@ void *key, *val;
 	return -1;
 }
 
-void* map_reset_key(root, key)
+void* map_set_key(root, key)
 map *root;
 void *key;
 {
@@ -115,10 +115,10 @@ void *key;
 	cmp = root->cmp(root->key, key);
 
 	if (cmp < 0)
-		return map_reset_key(root->left, key);
+		return map_set_key(root->left, key);
 
 	if (cmp > 0)
-		return map_reset_key(root->right, key);
+		return map_set_key(root->right, key);
 
 	tmp = root->key;
 	root->key = key;
