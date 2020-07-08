@@ -102,6 +102,25 @@ void *key, *val;
 	return -1;
 }
 
+int map_check_key_ptr(root, key)
+map *root;
+void *key;
+{
+	int cmp;
+
+	if (!root || !key)
+		return 0;
+
+	cmp = root->cmp(root->key, key);
+
+	if (cmp < 0)
+		return map_check_key_ptr(root->left, key);
+	if (cmp > 0)
+		return map_check_key_ptr(root->right, key);
+
+	return root->key == key;
+}
+
 void* map_set_key(root, key)
 map *root;
 void *key;

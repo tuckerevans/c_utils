@@ -96,8 +96,37 @@ else
 	assert(map_size(dict) == 1);
 ----
 
-[[map_reset_key]]
-+void* map_reset_key(map *self, vaid *key)+
+[[map_check_key_ptr]]
++int map_check_key_ptr(map *self, void *key)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is used to check the key pointer for equivalent keys.
+It is provided to ease memory management, in combination with
+<<map_set_key,+map_set_key()+>>.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+char *eq_key2
+
+map *dict = map_new((cmp_func) strcmp);
+
+map_insert(dict, strdup("ONE"), NULL);
+
+eq_key2 = strdup("ONE");
+
+/*Want to free key1 for some reason*/
+if (!map_check_key_ptr(dict, eq_key2)) {
+	free(map_set_key(dict, eq_key2));
+}
+
+----
+
+[[map_set_key]]
++void* map_set_key(map *self, void *key)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This replaces an equivalent key with the one passed in, the key that is
 overwritten is return so the user can free it.
@@ -113,12 +142,12 @@ map *dict = map_new((cmp_func) strcmp);
 
 map_insert(dict, strdup("ONE"), "VALUE");
 assert(map_insert(dict, "ONE", "NEW_VALUE") < 0);
-free(map_reset_key(dict "ONE"));
+free(map_set_key(dict "ONE"));
 assert(map_insert(dict, "ONE", "NEW_VALUE") == 0);
 ----
 
 [[map_index]]
-+void* map_index(map *self, vaid *key)+
++void* map_index(map *self, void *key)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Returns the value associated with +key+ (or equivalent).
 
