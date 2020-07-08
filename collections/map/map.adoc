@@ -73,11 +73,9 @@ assert(map_size(dict) == 1);
 [[map_insert]]
 +int map_insert(map *self, void *key, void *value)+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Inserts item +value+ for +key+ into +self+
-This returns an int indicating a successful insertion; currently the only
-two potential errors are caused by a NULL map or an equivalent key with a
-different pointer, this is in order to prevent a memory leak.
-<<reset_key,+map_reset_key()+>> can be used to fix this issue.
+Inserts a new item +value+ for +key+ into +self+
+This returns an int indicating a successful insertion; providing a NULL +self+
+or a key that is already in +self+ will return -1 otherwise 0 is returned.
 
 Examples
 ^^^^^^^^
@@ -85,11 +83,14 @@ Examples
 ----
 #include "map.h"
 #include <string.h>
+#include <stdio.h>
 
 map *dict = map_new((cmp_func) strcmp);
 
-map_insert(dict, "ONE", NULL);
-assert(map_size(dict) == 1);
+if (map_insert(dict, "ONE", NULL) < 0)
+	printf("Failed to insert {\"ONE\": NULL}\n");
+else
+	assert(map_size(dict) == 1);
 ----
 
 [[map_reset_key]]

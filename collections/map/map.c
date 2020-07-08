@@ -82,24 +82,24 @@ void *key, *val;
 
 	cmp = root->cmp(root->key, key);
 
-	if (cmp == 0 && root->key == key) {
-		root->val = val;
-	} else if (cmp < 0) {
+	if (cmp < 0) {
 
 		if (!root->left)
 			root->left = map_new_from_parent(root);
 
 		map_insert(root->left, key, val);
-	} else if (cmp > 0) {
+		return 0;
+	}
+
+	if (cmp > 0) {
 		if (!root->right)
 			root->right = map_new_from_parent(root);
 
 		map_insert(root->right, key, val);
-	} else {
-		return -1;
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }
 
 void* map_reset_key(root, key)
