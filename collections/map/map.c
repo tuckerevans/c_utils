@@ -34,6 +34,9 @@ struct map_node *root;
 int map_bal_factor(root)
 struct map_node *root;
 {
+	if (!root)
+		return 0;
+
 	return map_height(root->right) - map_height(root->left);
 }
 
