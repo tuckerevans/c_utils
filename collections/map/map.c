@@ -88,7 +88,7 @@ void *key, *val;
 	if (!root)
 		return -1;
 
-	cmp = cmpf(root->key, key);
+	cmp = cmpf(key, root->key);
 
 	if (cmp < 0) {
 
@@ -145,11 +145,12 @@ cmp_func cmpf;
 void *key, *val;
 {
 	int cmp;
+	void *tmp;
 
 	if (!root)
 		return NULL;
 
-	cmp = cmpf(root->key, key);
+	cmp = cmpf(key, root->key);
 
 	if (cmp < 0)
 		return map_set_val_aux(root->left, cmpf, key, val);
@@ -182,7 +183,7 @@ void *key;
 	if(!root)
 		return 0;
 
-	cmp = cmpf(root->key, key);
+	cmp = cmpf(key, root->key);
 
 	if (cmp < 0)
 		return map_check_key_ptr_aux(root->left, cmpf, key);
@@ -213,7 +214,7 @@ void *key;
 	if (!root)
 		return NULL;
 
-	cmp = cmpf(root->key, key);
+	cmp = cmpf(key, root->key);
 
 	if (cmp < 0)
 		return map_set_key_aux(root->left, cmpf, key);
@@ -247,7 +248,7 @@ void *key;
 	if (!root)
 		return NULL;
 
-	cmp = cmpf(root->key, key);
+	cmp = cmpf(key, root->key);
 
 	if (cmp < 0)
 		return map_index_aux(root->left, cmpf, key);
