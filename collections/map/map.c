@@ -50,6 +50,12 @@ struct map_node **node;
 	tmp->right = (*node)->left;
 	(*node)->left = tmp;
 
+	(*node)->parent = (*node)->left->parent;
+	(*node)->left->parent = *node;
+	
+	if ((*node)->left->right)
+		(*node)->left->right->parent = (*node)->left;
+
 	return;
 }
 
@@ -62,6 +68,12 @@ struct map_node **node;
 	*node = tmp->left;
 	tmp->left = (*node)->right;
 	(*node)->right = tmp;
+
+	(*node)->parent = (*node)->right->parent;
+	(*node)->right->parent = *node;
+
+	if ((*node)->right->left)
+		(*node)->right->left->parent = (*node)->right;
 
 	return;
 }
