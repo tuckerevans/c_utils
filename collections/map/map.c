@@ -146,8 +146,8 @@ map *root;
 	return map_size_aux(root->root);
 }
 
-int map_insert_aux(root, cmpf, key, val)
-struct map_node *root;
+int map_insert_aux(root, cmpf, key, val, into)
+struct map_node *root, **into;
 cmp_func cmpf;
 void *key, *val;
 {
@@ -161,28 +161,30 @@ void *key, *val;
 	if (cmp < 0) {
 
 		if (!root->left) {
-			root->left = map_new_node(root);
+			root->left = *into = map_new_node(root);
 
 			root->left->parent = root;
 			root->left->key = key;
 			root->left->val = val;
+
 			return 0;
 		}
 
-		return map_insert_aux(root->left, cmpf, key, val);
+		return map_insert_aux(root->left, cmpf, key, val, into);
 	}
 
 	if (cmp > 0) {
 		if (!root->right) {
-			root->right = map_new_node(root);
+			root->right = *into = map_new_node(root);
 
 			root->right->parent = root;
 			root->right->key = key;
 			root->right->val = val;
+
 			return 0;
 		}
 
-		return map_insert_aux(root->right, cmpf, key, val);
+		return map_insert_aux(root->right, cmpf, key, val, into);
 	}
 
 	return -1;
@@ -192,7 +194,8 @@ int map_insert(root, key, val)
 map *root;
 void *key, *val;
 {
-	int cmp;
+	int cmp, ret, bal;
+	struct map_node *new;
 
 	if (!root)
 		return -1;
@@ -204,7 +207,31 @@ void *key, *val;
 		return 0;
 	}
 
-	return map_insert_aux(root->root, root->cmp, key, val);
+	ret = map_insert_aux(root->root, root->cmp, key, val, &new);
+
+	if (ret != 0)
+		return ret;
+
+
+	do {
+		if (!new->parent)
+			return 0;
+
+		new = new->parent;
+		bal = map_bal_factor(new);
+	} while (bal > -2 && bal < 2);
+
+
+	if (!new->parent)
+		map_rebal_tree(&(root->root));
+	else if (new == new->parent->left)
+		map_rebal_tree(&(new->parent->left));
+	else if (new == new->parent->right)
+		map_rebal_tree(&(new->parent->right));
+	else
+		assert(0);
+
+	return 0;
 }
 
 void* map_set_val_aux(root, cmpf, key, val)
