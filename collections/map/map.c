@@ -37,6 +37,32 @@ struct map_node *root;
 	return map_height(root->right) - map_height(root->left);
 }
 
+void map_rotate_left(node)
+struct map_node **node;
+{
+	struct map_node *tmp;
+
+	tmp = *node;
+	*node = tmp->right;
+	tmp->right = (*node)->left;
+	(*node)->left = tmp;
+
+	return;
+}
+
+void map_rotate_right(node)
+struct map_node **node;
+{
+	struct map_node *tmp;
+
+	tmp = *node;
+	*node = tmp->left;
+	tmp->left = (*node)->right;
+	(*node)->right = tmp;
+
+	return;
+}
+
 map* map_new(cmp)
 cmp_func cmp;
 {
