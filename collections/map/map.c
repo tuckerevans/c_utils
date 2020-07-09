@@ -90,7 +90,7 @@ int map_size_aux(root)
 struct map_node *root;
 {
 	if (!root)
-		return 1;
+		return 0;
 
 	return map_size_aux(root->left) + map_size_aux(root->right) + 1;
 }
