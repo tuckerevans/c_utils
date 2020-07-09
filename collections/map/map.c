@@ -63,6 +63,33 @@ struct map_node **node;
 	return;
 }
 
+void map_rebal_tree(root)
+struct map_node **root;
+{
+	struct map_node *tmp;
+
+	if(! *root)
+		return;
+
+	if (map_height((*root)->left) > map_height((*root)->right)) {
+		if(map_bal_factor((*root)->left) >= 0) {
+			map_rotate_left(root);
+		} else {
+			map_rotate_left(root);
+			map_rotate_right(root);
+		}
+	} else {
+		if (map_bal_factor((*root)->right) >= 0) {
+			map_rotate_right(root);
+		} else {
+			map_rotate_right(root);
+			map_rotate_left(root);
+		}
+	}
+
+	return;
+}
+
 map* map_new(cmp)
 cmp_func cmp;
 {
