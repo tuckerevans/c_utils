@@ -17,6 +17,36 @@ struct map_node {
 	struct map_node *left, *right, *parent;
 };
 
+void map_free_aux(root)
+struct map_node *root;
+{
+	if (!root)
+		return;
+
+	map_free_aux(root->left);
+	root->left = NULL;
+
+	map_free_aux(root->right);
+	root->right= NULL;
+
+	root->parent = NULL;
+
+	free(root);
+	return;
+}
+
+void map_free(root)
+map *root;
+{
+	if (!root)
+		return;
+
+	map_free_aux(root->root);
+
+	free(root);
+	return;
+}
+
 int map_height(root)
 struct map_node *root;
 {
@@ -397,34 +427,4 @@ map *root;
 
 	map_clear_aux(root->root);
 	root->root = NULL;
-}
-
-void map_free_aux(root)
-struct map_node *root;
-{
-	if (!root)
-		return;
-
-	map_free_aux(root->left);
-	root->left = NULL;
-
-	map_free_aux(root->right);
-	root->right= NULL;
-
-	root->parent = NULL;
-
-	free(root);
-	return;
-}
-
-void map_free(root)
-map *root;
-{
-	if (!root)
-		return;
-
-	map_free_aux(root->root);
-
-	free(root);
-	return;
 }
