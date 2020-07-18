@@ -394,6 +394,86 @@ void *key;
 	return map_index_aux(root->root, root->cmp, key);
 }
 
+void* map_remove_aux(root, cmpf, key)
+struct map_node **root;
+cmp_func cmpf;
+void *key;
+{
+	struct map_node *next, *next_parent, *tmp;
+	void *ret;
+	int cmp;
+
+	if (!*root)
+		return NULL;
+
+	cmp = cmpf(key, (*root)->key);
+
+	if (cmp < 0) {
+		next = map_remove_aux(&(*root)->left, cmpf, key);
+		return next;
+	}
+
+	if (cmp > 0) {
+		next = map_remove_aux(&(*root)->right, cmpf, key);
+		return next;
+	}
+
+	tmp = *root;
+
+	if ((*root)->left && (*root)->right ) {
+		for (next = (*root)->right; next->left; next = next->left);
+	} else if ((*root)->left || (*root)->right){
+		next = tmp->left ? tmp->left : tmp->right;
+	} else {
+		next = NULL;
+	}
+
+	if (next) {
+		next_parent = next->parent;
+
+		if (next_parent == tmp) {
+			if (next->right)
+			next->right->parent = next_parent;
+
+			next_parent->right = next->right;
+			next->right = NULL;
+		} else if (next_parent) {
+			if (next->right) {
+				next->right->parent = next_parent;
+
+				next_parent->left = next->right;
+				next->right = NULL;
+			} else {
+				next_parent->left = NULL;
+			}
+		}
+		next->parent = tmp->parent;
+		next->right = tmp->right;
+		next->left = tmp->left;
+
+	}
+
+	ret = tmp->val;
+
+	tmp->parent = tmp->right = tmp->left = NULL;
+	free(tmp);
+
+	*root = next;
+
+	//CHECK BALANCE
+	return ret;
+}
+
+void* map_remove(root, key)
+map *root;
+void *key;
+{
+	if (!root)
+		return NULL;
+
+	return map_remove_aux(&root->root, root->cmp, key);
+}
+
 void map_clear_aux(root)
 struct map_node *root;
 {
