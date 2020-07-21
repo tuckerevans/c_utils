@@ -12,8 +12,10 @@ int map_size(map*);
 
 /*data*/
 int map_insert(map*, void*, void*);
-void* map_index(map*, void*);
+void* map_remove(map*, void*);
+
 void* map_set_val(map*, void*, void*);
+void* map_index(map*, void*);
 
 int map_check_key_ptr(map*, void*);
 void* map_set_key(map*, void*);

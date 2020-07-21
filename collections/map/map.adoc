@@ -9,9 +9,6 @@ NOTE: Keys are passed as void pointers and their data is not copied (this
 should be handled by the user), they should not be freed without clearing the
 map.
 
-NOTE: NULL keys are used to distingish a empty map, therefore NULL keys should
-never be used.
-
 NOTE: There is currently no way to distinquish between a failed retrieval
 (pop, index, back, etc.) and returning a NULL value. Keep this in mind if
 you plan on storing NULL values in the vector, there are plans to fix this in
@@ -94,6 +91,32 @@ if (map_insert(dict, "ONE", NULL) < 0)
 	printf("Failed to insert {\"ONE\": NULL}\n");
 else
 	assert(map_size(dict) == 1);
+----
+[[map_remove]]
++void* map_remove(map *self, void *key)+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Removes (and returns) the element at position +key+. The key and value are not
+freed.
+
+Examples
+^^^^^^^^
+[source,c]
+----
+#include "map.h"
+#include <string.h>
+
+map *dict = map_new((cmp_func) strcmp);
+
+map_insert(dict, "ONE", strdup("VALUE"));
+map_insert(dict, "TWO", strdup("VALUE"));
+map_insert(dict, "THREE", strdup("VALUE"));
+map_insert(dict, "FOUR", strdup("VALUE"));
+map_insert(dict, "FIVE", strdup("VALUE"));
+map_insert(dict, "SIX", strdup("VALUE"));
+
+char* tmp = map_remove(dict, "FOUR");
+assert(strcmp(tmp, "FOUR") == 0);
+free(tmp);
 ----
 
 [[map_set_val]]
