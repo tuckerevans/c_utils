@@ -462,9 +462,18 @@ void *key;
 	tmp->parent = tmp->right = tmp->left = NULL;
 	free(tmp);
 
-	*root = next;
+	if (!(*root = next) && !next_parent)
+		return ret;
 
-	//CHECK BALANCE
+	for (tmp = next_parent; tmp && tmp->parent; tmp = tmp->parent) {
+		bal = map_bal_factor(tmp);
+		if (bal <= -2 || bal >= 2) {
+			if (tmp == tmp->parent->left) {
+				map_rebal_tree(&(tmp->parent->left));
+			} else if (tmp == tmp->parent->right)
+				map_rebal_tree(&(tmp->parent->right));
+		}
+	}
 	return ret;
 }
 
@@ -472,10 +481,20 @@ void* map_remove(root, key)
 map *root;
 void *key;
 {
+	void *ret;
+	int bal;
+
 	if (!root)
 		return NULL;
 
-	return map_remove_aux(&root->root, root->cmp, key);
+	ret = map_remove_aux(&root->root, root->cmp, key);
+
+	bal = map_bal_factor(root->root);
+	if (bal <= -2 || bal >= 2) {
+		map_rebal_tree(&root->root);
+	}
+
+	return ret;
 }
 
 void map_clear_aux(root)
