@@ -401,28 +401,24 @@ void *key;
 {
 	struct map_node *next, *next_parent, *tmp;
 	void *ret;
-	int cmp;
+	int cmp, bal;
 
 	if (!*root)
 		return NULL;
 
 	cmp = cmpf(key, (*root)->key);
 
-	if (cmp < 0) {
-		next = map_remove_aux(&(*root)->left, cmpf, key);
-		return next;
-	}
+	if (cmp < 0)
+		return map_remove_aux(&(*root)->left, cmpf, key);
 
-	if (cmp > 0) {
-		next = map_remove_aux(&(*root)->right, cmpf, key);
-		return next;
-	}
+	if (cmp > 0)
+		return map_remove_aux(&(*root)->right, cmpf, key);
 
 	tmp = *root;
 
-	if ((*root)->left && (*root)->right ) {
-		for (next = (*root)->right; next->left; next = next->left);
-	} else if ((*root)->left || (*root)->right){
+	if (tmp->left && tmp->right ) {
+		for (next = tmp->right; next->left; next = next->left);
+	} else if (tmp->left || tmp->right){
 		next = tmp->left ? tmp->left : tmp->right;
 	} else {
 		next = NULL;
@@ -451,6 +447,14 @@ void *key;
 		next->right = tmp->right;
 		next->left = tmp->left;
 
+		if (next->left)
+			next->left->parent = next;
+		if (next->right)
+			next->right->parent = next;
+
+	} else {
+		next_parent = tmp->parent;
+		next = NULL;
 	}
 
 	ret = tmp->val;
