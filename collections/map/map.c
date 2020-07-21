@@ -120,14 +120,14 @@ struct map_node **root;
 		if(map_bal_factor((*root)->left) >= 0) {
 			map_rotate_right(root);
 		} else {
-			map_rotate_right(root);
+			map_rotate_right(&(*root)->left);
 			map_rotate_left(root);
 		}
 	} else {
 		if (map_bal_factor((*root)->right) >= 0) {
 			map_rotate_left(root);
 		} else {
-			map_rotate_left(root);
+			map_rotate_left(&(*root)->right);
 			map_rotate_right(root);
 		}
 	}
