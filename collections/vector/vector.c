@@ -79,7 +79,7 @@ vec *root;
 	if (!root)
 		return;
 
-	root->base = reallocarray(root->base, root->limit * 2, sizeof(void*));
+	root->base = realloc(root->base, root->limit * 2 * sizeof(void*));
 	assert(root->base);
 }
 
@@ -261,7 +261,7 @@ int n;
 
 	for (i = root->limit; i < root->end + n; i*=2);
 
-	root->base = reallocarray(root->base, i, sizeof(void*));
+	root->base = realloc(root->base, i * sizeof(void*));
 }
 
 void vec_clear(root)
