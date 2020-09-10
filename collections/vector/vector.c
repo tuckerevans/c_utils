@@ -81,6 +81,7 @@ vec *root;
 
 	root->base = realloc(root->base, root->limit * 2 * sizeof(void*));
 	assert(root->base);
+	root->limit *= 2;
 }
 
 vec* vec_cp(root)
