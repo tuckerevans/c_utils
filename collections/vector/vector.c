@@ -17,8 +17,8 @@ vec *root;
 {
 	int i;
 
-	fprintf(stderr, "VEC[base: %p, end: %p, limit:%p]:\n\t ",
-			root->base, root->end, root->limit);
+	fprintf(stderr, "VEC[base: %p, end: %d, limit:%d]:\n\t ",
+			(void*) root->base, root->end, root->limit);
 	for (i=0; i < root->end; i++){
 		fprintf(stderr, "[%p]", vec_index(root,i));
 	}
