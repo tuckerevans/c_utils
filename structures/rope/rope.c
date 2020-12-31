@@ -28,6 +28,18 @@ rope* rope_new()
 	return tmp;
 }
 
+size_t rope_len(root)
+rope *root;
+{
+	if (!root)
+		return 0;
+
+	if (root->str)
+		return strlen(root->str);
+
+	return rope_len(root->left) + rope_len(root->right);
+}
+
 rope* str_to_rope(str)
 char *str;
 {
