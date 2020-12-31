@@ -27,3 +27,19 @@ rope* rope_new()
 
 	return tmp;
 }
+
+rope* str_to_rope(str)
+char *str;
+{
+	rope *tmp;
+
+	if (!str)
+		return NULL;
+
+	tmp = rope_new();
+	tmp->len = strlen(str);
+	tmp->str = strdup(str);
+
+	return tmp;
+}
+
