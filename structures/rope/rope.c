@@ -55,3 +55,20 @@ char *str;
 	return tmp;
 }
 
+rope* rope_concat(node1, node2)
+rope *node1, *node2;
+{
+	rope *tmp;
+
+	if (!node1 || !node2)
+		return node1 ? node1 : node2;
+
+	tmp = rope_new();
+	tmp->len = rope_len(node1);
+	tmp->left = node1;
+	tmp->right = node2;
+	node1->parent = tmp;
+	node2->parent = tmp;
+
+	return tmp;
+}
