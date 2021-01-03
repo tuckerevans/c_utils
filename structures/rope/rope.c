@@ -28,6 +28,53 @@ rope* rope_new()
 	return tmp;
 }
 
+void rope_debug_print_aux(root, s)
+rope *root;
+int s;
+{
+	int i;
+
+	for (i = 0; i < s; i++)
+		printf("|    ");
+
+	if (!root) {
+		printf("\n");
+		return;
+	}
+
+#ifdef ROPE_DEBUG_PARENT
+	printf("[%p]\n", root->parent);
+#endif
+
+	printf("{len:%d,str:\'%s\'}[%p]\n", root->len, root->str, root);
+
+	if (root->str)
+		return;
+
+	rope_debug_print_aux(root->left, ++s);
+	rope_debug_print_aux(root->right, s);
+
+}
+
+void rope_debug_print(root)
+rope *root;
+{
+	rope_debug_print_aux(root, 0);
+}
+
+void rope_print(root)
+rope *root;
+{
+	if (!root)
+		return;
+
+	if (root->str)
+		printf("%s", root->str);
+
+	rope_print(root->left);
+	rope_print(root->right);
+}
+
 size_t rope_len(root)
 rope *root;
 {
