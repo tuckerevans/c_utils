@@ -82,9 +82,21 @@ rope *root;
 		return 0;
 
 	if (root->str)
-		return strlen(root->str);
+		return root->len;
 
 	return rope_len(root->left) + rope_len(root->right);
+}
+
+size_t rope_relen(root)
+rope *root;
+{
+	if (!root)
+		return 0;
+
+	if (root->str)
+		return root->len;
+
+	return root->len = rope_relen(root->left) + rope_len(root->right);
 }
 
 rope* str_to_rope(str)
