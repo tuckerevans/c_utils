@@ -28,6 +28,21 @@ rope* rope_new()
 	return tmp;
 }
 
+void rope_free(root)
+rope *root;
+{
+	if (root->str)
+		free(root->str);
+	if (root->left)
+		free(root->left);
+	if (root->right)
+		free(root->right);
+
+	free(root);
+
+	return;
+}
+
 void rope_debug_print_aux(root, s)
 rope *root;
 int s;
