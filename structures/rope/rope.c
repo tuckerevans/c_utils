@@ -103,15 +103,34 @@ rope *root;
 }
 
 size_t rope_relen(root)
-rope *root;
+rope **root;
 {
-	if (!root)
+	rope *tmp;
+
+	if (!*root)
 		return 0;
 
-	if (root->str)
-		return root->len;
+	tmp = *root;
 
-	return root->len = rope_relen(root->left) + rope_len(root->right);
+	if (tmp->str) {
+		return tmp->len;
+	} else {
+		if (tmp->left && !tmp->right) {
+			tmp->left->parent = tmp->left;
+			*root = tmp->left;
+
+			tmp->left = NULL;
+			rope_free(tmp);
+		} else if (tmp->right && !tmp->left) {
+			tmp->right->parent = tmp->right;
+			*root = tmp->right;
+
+			tmp->right = NULL;
+			rope_free(tmp);
+		}
+	}
+
+	return (*root)->len = rope_relen(&(*root)->left) + rope_relen(&(*root)->right);
 }
 
 rope* str_to_rope(str)
@@ -206,8 +225,8 @@ size_t i;
 	*root = cur;
 
 	/*TODO should be rebalancing rather than just recalulating lengths*/
-	rope_relen(split);
-	rope_relen(*root);
+	rope_relen(&split);
+	rope_relen(root);
 
 	return split;
 }
