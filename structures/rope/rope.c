@@ -230,3 +230,22 @@ size_t i;
 
 	return split;
 }
+
+rope* rope_insert_str(root, str)
+rope *root;
+char *str;
+size_t idx;
+{
+	return rope_insert(root, str_to_rope(str), idx);
+}
+
+rope* rope_insert(root, ins, idx)
+rope *root, *ins;
+size_t idx;
+{
+	rope* tmp;
+	
+	tmp = rope_split(&root, idx+1);
+	root = rope_concat(root, ins);
+	return rope_concat(root, tmp);
+}
